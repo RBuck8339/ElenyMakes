@@ -1,2 +1,3 @@
-logic/
 .env
+.next/
+node_modules/

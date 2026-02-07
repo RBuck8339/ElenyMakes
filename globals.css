@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@source "../src";
+@theme {
+    --color-background: #F5EDEC;
+    --color-main-brown: #533638;
+    --color-main-pink: #F6D3D8;
+    --color-accent-pink: #F7B9C4;
+    --color-neutral-accent: #B3C8BA;
+    --color-accent-green: #619B8A;
+    --color-other-pink1: #B56F76;
+    --color-other-pink2: #B48E92;
+}

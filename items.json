@@ -1,0 +1,44 @@
+{
+    "shark-bikini-top": {
+        "img_path": "gallery/shark-bikini-top/",
+        "item_name": "Shark Themed Bikini Top",
+        "item_description": "Want your tits to look like sharks?",
+        "price": 69.67
+    },
+    "shark-bikini-bottom": {
+        "img_path": "gallery/shark-bikini-bottom/",
+        "item_name": "Shark Themed Bikini Bottom",
+        "item_description": "",
+        "price": 0
+    },
+    "shark-bikini-combo": {
+        "img_path": "gallery/shark-bikini-combo/",
+        "item_name": "Shark Themed Bikini Combo",
+        "item_description": "",
+        "price": 0
+    },
+    "brown-bikini-top": {
+        "img_path": "gallery/brown-bikini-top/",
+        "item_name": "Brown Bikini Top",
+        "item_description": "",
+        "price": 0
+    },
+    "brown-bikini-bottom": {
+        "img_path": "gallery/brown-bikini-bottom/",
+        "item_name": "Brown Bikini Bottom",
+        "item_description": "",
+        "price": 0
+    },
+    "brown-bikini-combo": {
+        "img_path": "gallery/brown-bikini-combo/",
+        "item_name": "Brown Bikini Combo",
+        "item_description": "",
+        "price": 0
+    },
+    "wave-top": {
+        "img_path": "gallery/wave-top/",
+        "item_name": "Wave Top",
+        "item_description": "",
+        "price": 0
+    }
+}

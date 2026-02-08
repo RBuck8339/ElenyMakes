@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {updateCart} from '../logic/updateCart';
 
 export default function Item({ item }) {
     if (!item) return null;
@@ -19,6 +20,14 @@ export default function Item({ item }) {
         setCurrIdx((prevIdx) => (prevIdx - 1 + images.length) % images.length);
     }
 
+    const [inCart, setInCart] = useState(false);
+
+    const updateCartHandler = () => {
+        updateCart(item.id, !inCart);
+        console.log(item.id);
+        console.log(!inCart);
+        setInCart(prev => !prev);
+    };
 
     return (
         <div className="flex flex-col bg-main-pink rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 w-full">
@@ -33,14 +42,14 @@ export default function Item({ item }) {
                     <button 
                         onClick={prevImage}
                         disabled={currIdx === 0}
-                        className={`bg-neutral-accent hover:bg-white p-2 rounded-full text-main-brown shadow-sm ${currIdx === 0 ? 'invisible' : ''}`}
+                        className={`flex bg-neutral-accent hover:bg-white p-2 rounded-full text-center items-center  text-main-brown shadow-sm ${currIdx === 0 ? 'invisible' : ''}`}
                     >
                         {'<'}
                     </button>
                     <button 
                         onClick={nextImage}
                         disabled={currIdx === images.length - 1}
-                        className={`bg-white/80 hover:bg-white p-2 rounded-full text-main-brown shadow-sm ${currIdx === images.length - 1 ? 'invisible' : ''}`}
+                        className={`flex bg-white/80 hover:bg-white p-2 rounded-full text-center items-center  text-main-brown shadow-sm ${currIdx === images.length - 1 ? 'invisible' : ''}`}
                     >
                         {'>'}
                     </button>
@@ -59,13 +68,16 @@ export default function Item({ item }) {
                     <p className="text-main-brown/70 font-semibold">${item.price}</p>
                 </div>
                 
-                <div className="flex flex-col gap-2">
-                    <button className="w-full bg-main-brown text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">
-                        Add to Cart
-                    </button>
+                <div className="flex flex-row gap-2 h-1/2">
                     <button className="w-full border border-main-brown text-main-brown py-2 rounded-lg font-medium hover:bg-main-brown/5 transition-colors text-sm">
                         View Details
                     </button>
+                    <button className="w-full bg-main-brown text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    onClick={updateCartHandler}>
+                        <img className="w-full h-full p-3" 
+                        src={!inCart ? '/icons/cart_plus.png' : '/icons/cart_minus.png'}/>
+                    </button>
+                    
                 </div>
             </div>
         </div>

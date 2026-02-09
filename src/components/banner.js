@@ -18,7 +18,7 @@ export default function Banner(){
 
                 {/* MAIN TITLE: Green Text on Pink Background */}
                 <h1 
-                    className="text-accent-green text-8xl md:text-9xl text-center leading-[0.8] p-10"
+                    className="text-main-brown text-8xl md:text-9xl text-center leading-[0.8] p-10"
                     style={{ 
                         fontFamily: "'Monsieur La Doulaise', cursive",
                         // Adding a slight brown shadow improves legibility of green on pink

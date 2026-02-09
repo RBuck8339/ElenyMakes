@@ -1,4 +1,4 @@
-import purchaseHandler from '/../logic/purchaseHandler';
+import purchaseHandler from '../logic/purchaseHandler';
 
 export default function Checkout({items}){
     // Need successful purchase handling logic

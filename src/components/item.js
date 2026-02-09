@@ -19,8 +19,9 @@ export default function Item({ item }) {
     const prevImage = () => {
         setCurrIdx((prevIdx) => (prevIdx - 1 + images.length) % images.length);
     }
-
-    const [inCart, setInCart] = useState(false);
+    
+    const currentCart = JSON.parse(localStorage.getItem('cart_ids')) || [];
+    const [inCart, setInCart] = useState(currentCart.includes(item.id));
 
     const updateCartHandler = () => {
         updateCart(item.id, !inCart);
@@ -72,7 +73,7 @@ export default function Item({ item }) {
                     <button className="w-full border border-main-brown text-main-brown py-2 rounded-lg font-medium hover:bg-main-brown/5 transition-colors text-sm">
                         View Details
                     </button>
-                    <button className="w-full bg-main-brown text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    <button className="w-full bg-other-pink1 text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
                     onClick={updateCartHandler}>
                         <img className="w-full h-full p-3" 
                         src={!inCart ? '/icons/cart_plus.svg' : '/icons/cart_minus.svg'}/>

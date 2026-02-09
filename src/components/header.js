@@ -12,11 +12,13 @@ export default function Header() {
     return (
         <div className="fixed top-0 left-0 w-full z-[100] flex flex-col">
             
-            <div className="flex flex-row justify-end items-center bg-main-brown h-16 px-4">
+            <div className="flex flex-row justify-end items-center bg-accent-pink h-16 px-4
+                border-t border-white/20 
+                shadow-[inset_0_1px_2px_rgba(255,255,255,0.15),0_4px_6px_-1px_rgba(0,0,0,0.2)]">
                 <button onClick={toggleCart} className="h-full py-3">
                     <img 
                         className="h-full w-auto object-contain" 
-                        src="icons/cart.png" 
+                        src="icons/cart.svg" 
                         alt="Cart"
                     />
                 </button>

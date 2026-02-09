@@ -30,7 +30,7 @@ export default function Item({ item }) {
     };
 
     return (
-        <div className="flex flex-col bg-main-pink rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 w-full">
+        <div className="flex flex-col bg-main-pink rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-100 md:h-150">
             <div className="relative group aspect-square w-full bg-gray-200">
                 <img
                     src={images[currIdx]}
@@ -57,7 +57,7 @@ export default function Item({ item }) {
                 
                 <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
                     {images.map((_, i) => (
-                        <div key={i} className={`h-1.5 w-1.5 rounded-full ${i === currIdx ? 'bg-white' : 'bg-white/40'}`} />
+                        <div key={i} className={`h-1 w-1 rounded-full ${i === currIdx ? 'bg-white' : 'bg-white/40'}`} />
                     ))}
                 </div>
             </div>
@@ -75,7 +75,7 @@ export default function Item({ item }) {
                     <button className="w-full bg-main-brown text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
                     onClick={updateCartHandler}>
                         <img className="w-full h-full p-3" 
-                        src={!inCart ? '/icons/cart_plus.png' : '/icons/cart_minus.png'}/>
+                        src={!inCart ? '/icons/cart_plus.svg' : '/icons/cart_minus.svg'}/>
                     </button>
                     
                 </div>

@@ -4,11 +4,17 @@ import { updateCart } from '../logic/updateCart';
 export default function Item({ item }) {
     if (!item) return null;
 
-    const images = [
-        '/gallery/tmp1.jpg',
-        '/gallery/tmp2.jpg',
-        '/gallery/tmp3.jpg'
-    ]; 
+    let images = [];
+    if (item.images && item.images.length > 0) {
+        images = item.images.map(img => img.startsWith('/') ? img : `/${img}`);
+    }
+    else {
+            images = [
+            '/gallery/tmp1.jpg',
+            '/gallery/tmp2.jpg',
+            '/gallery/tmp3.jpg'
+        ];
+    }
 
     const [currIdx, setCurrIdx] = useState(0);
     

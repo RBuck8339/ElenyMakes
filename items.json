@@ -1,10 +1,13 @@
 {
     "shark-bikini-top": {
-        "img_path": "gallery/shark-bikini-top/",
         "item_name": "Shark Themed Bikini Top",
         "item_description": "Want your tits to look like sharks?",
         "price": 69.67,
-        "id": 0
+        "id": 0,
+        "images": [
+            "gallery/products/shark-bikini-top/complete.jpg",
+            "gallery/products/shark-bikini-top/close_up.jpg"
+        ]
     },
     "shark-bikini-bottom": {
         "img_path": "gallery/shark-bikini-bottom/",

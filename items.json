@@ -1,54 +1,68 @@
 {
     "shark-bikini-top": {
         "item_name": "Shark Themed Bikini Top",
-        "item_description": "Want your tits to look like sharks?",
+        "item_description": "This top is composed of single crochet cups, featuring color changes which create a shark print. Instructions for the button eyes are provided.",
+        "item_type": "Crochet",
         "price": 69.67,
+        "Materials": [
+            "Size F Hook",
+            "Four buttons",
+            "Size 3 yarn: Light Grey, Dark Grey, Red, White, Black, Blue"
+        ],
         "id": 0,
         "images": [
             "gallery/products/shark-bikini-top/complete.jpg",
             "gallery/products/shark-bikini-top/close_up.jpg"
         ]
     },
-    "shark-bikini-bottom": {
-        "img_path": "gallery/shark-bikini-bottom/",
-        "item_name": "Shark Themed Bikini Bottom",
-        "item_description": "",
+    "elenys-bikini-bottoms": {
+        "img_path": "gallery/bikini-bottom/",
+        "item_name": "Eleny's Bikini Bottoms",
+        "item_type": "Crochet",
+        "item_description": "These bottoms are formed by a combination of single crochet and increase stitches. Instructions to create a gusset are provided, ensuring maximum security.",
         "price": 0,
+        "Materials": [
+            "Size F Hook",
+            "Size 3 yarn"
+        ],
         "id": 1
     },
-    "shark-bikini-combo": {
-        "img_path": "gallery/shark-bikini-combo/",
-        "item_name": "Shark Themed Bikini Combo",
-        "item_description": "",
+    "starfish-bikini-top": {
+        "img_path": "gallery/brown-bikini-top/",
+        "item_name": "Starfish Bikini Top",
+        "item_type": "Crochet",
+        "item_description": "This top is composed of single crochets to form the cups, and a combination of stitches worked into a magic ring to form the starfish. Instructions to work buttons into the work are also provided.",
         "price": 0,
+        "Materials": [
+            "Size F Hook",
+            "Size 2 yarn",
+            "35-40 buttons"
+        ],
         "id": 2
     },
-    "brown-bikini-top": {
-        "img_path": "gallery/brown-bikini-top/",
-        "item_name": "Brown Bikini Top",
-        "item_description": "",
+    "elenys-wave-shrug": {
+        "img_path": "gallery/wave-shrug/",
+        "item_name": "Eleny's Wave Shrug",
+        "item_type": "Crochet",
+        "item_description": "This top is formed by joining wave shaped granny squares, then working above andvbelow with a variety of stitches to create a mesh style detail.",
         "price": 0,
+        "Materials": [
+            "Size F Hook",
+            "Size 3 yarn: Blue, Light Blue, White, Cream"
+        ],
         "id": 3
     },
-    "brown-bikini-bottom": {
-        "img_path": "gallery/brown-bikini-bottom/",
-        "item_name": "Brown Bikini Bottom",
-        "item_description": "",
+    "knit-microshorts": {
+        "img_path": "gallery/knit-microshorts/",
+        "item_name": "Knit Microshorts",
+        "item_type": "Knit",
+        "item_description": "These shorts are knit using German Short Rows to shape the shorts to be even in the front and the back. A gusset is created to add maximum coverage and security.",
         "price": 0,
+        "Materials": [
+            "Size 4 Needles",
+            "2 Size 4 DPNs",
+            "Size 5 eyelash yarn or Size 4 yarn held with mohair"
+        ],
         "id": 4
-    },
-    "brown-bikini-combo": {
-        "img_path": "gallery/brown-bikini-combo/",
-        "item_name": "Brown Bikini Combo",
-        "item_description": "",
-        "price": 0,
-        "id": 5
-    },
-    "wave-top": {
-        "img_path": "gallery/wave-top/",
-        "item_name": "Wave Top",
-        "item_description": "",
-        "price": 0,
-        "id": 6
     }
 }

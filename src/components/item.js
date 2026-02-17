@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { updateCart } from '../logic/updateCart';
+import Link from 'next/link';
 
 export default function Item({ item }) {
     if (!item) return null;
-
+    const itemSlug = item.item_name.toLowerCase().replaceAll(' ', '_');
     let images = [];
     if (item.images && item.images.length > 0) {
         images = item.images.map(img => img.startsWith('/') ? img : `/${img}`);
@@ -94,13 +95,22 @@ export default function Item({ item }) {
             <div className="p-4 flex flex-col justify-between flex-grow">
                 <div className="mb-4">
                     <h2 className="text-main-brown font-bold text-lg truncate">{item.item_name}</h2>
+                    <p className="text-main-brown/70 font-bold">{item.item_type}</p>
                     <p className="text-main-brown/70 font-semibold">${item.price}</p>
                 </div>
                 
                 <div className="flex flex-row gap-2 h-10"> {/* Fixed height for buttons */}
-                    <button className="flex-1 border border-main-brown text-main-brown py-2 rounded-lg font-medium hover:bg-main-brown/5 transition-colors text-sm">
-                        View Details
-                    </button>
+                    <Link 
+                        href={{
+                            pathname: '/product/[slug]', // Make sure this matches your folder name!
+                            query: { slug: itemSlug },
+                        }}
+                        className="flex-1 flex"
+                    >
+                        <button className="w-full border border-main-brown text-main-brown py-2 rounded-lg font-medium hover:bg-main-brown/5 transition-colors text-sm">
+                            View Details
+                        </button>
+                    </Link>
                     <button 
                         className="w-12 bg-other-pink1 text-white rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
                         onClick={handleCartToggle}

@@ -18,7 +18,7 @@ export default function Header() {
                 <button onClick={toggleCart} className="h-full py-3">
                     <img 
                         className="h-full w-auto object-contain" 
-                        src="icons/cart.svg" 
+                        src="/icons/cart.svg" 
                         alt="Cart"
                     />
                 </button>

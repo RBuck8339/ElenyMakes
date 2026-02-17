@@ -77,7 +77,6 @@ export default function Cart() {
                                         <span className="text-sm font-semibold text-accent-green">
                                             ${item.price.toFixed(2)}
                                         </span>
-                                        {/* Small Remove Button (Optional) */}
                                         <button 
                                             className="text-xs text-red-400 hover:text-red-600 underline"
                                             onClick={() => updateCart(item.id, false)}

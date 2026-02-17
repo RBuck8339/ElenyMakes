@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { updateCart } from '../logic/updateCart';
 import Link from 'next/link';
+import Carousel from '../components/carousel';
 
 export default function Item({ item }) {
     if (!item) return null;
     const itemSlug = item.item_name.toLowerCase().replaceAll(' ', '_');
-    let images = [];
-    if (item.images && item.images.length > 0) {
-        images = item.images.map(img => img.startsWith('/') ? img : `/${img}`);
-    }
-    else {
-            images = [
-            '/gallery/tmp1.jpg',
-            '/gallery/tmp2.jpg',
-            '/gallery/tmp3.jpg'
-        ];
-    }
-
-    const [currIdx, setCurrIdx] = useState(0);
+    const itemImages = item.images?.length > 0 
+        ? item.images.map(img => img.startsWith('/') ? img : `/${img}`)
+        : [];
     
     // FIX 1: Initialize as false (safe for server)
     const [inCart, setInCart] = useState(false);
@@ -37,15 +28,6 @@ export default function Item({ item }) {
         return () => window.removeEventListener('updateCart', checkCartStatus);
     }, [item.id]);
 
-    // Controls the carousel
-    const nextImage = (e) => {
-        e.stopPropagation(); // Prevent clicking the image from triggering parent clicks
-        setCurrIdx((prevIdx) => (prevIdx + 1) % images.length);
-    }
-    const prevImage = (e) => {
-        e.stopPropagation();
-        setCurrIdx((prevIdx) => (prevIdx - 1 + images.length) % images.length);
-    }
     
     // FIX 4: Simplified Handler
     const handleCartToggle = (e) => {
@@ -61,36 +43,7 @@ export default function Item({ item }) {
 
     return (
         <div className="flex flex-col bg-main-pink rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-100 md:h-150">
-            <div className="relative group aspect-square w-full bg-gray-200">
-                <img
-                    src={images[currIdx]}
-                    alt={`Slide ${currIdx}`}
-                    className="w-full h-full object-cover"
-                />
-
-                <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
-                        onClick={prevImage}
-                        disabled={currIdx === 0}
-                        className={`flex bg-neutral-accent hover:bg-white p-2 rounded-full text-center items-center text-main-brown shadow-sm ${currIdx === 0 ? 'invisible' : ''}`}
-                    >
-                        {'<'}
-                    </button>
-                    <button 
-                        onClick={nextImage}
-                        disabled={currIdx === images.length - 1}
-                        className={`flex bg-white/80 hover:bg-white p-2 rounded-full text-center items-center text-main-brown shadow-sm ${currIdx === images.length - 1 ? 'invisible' : ''}`}
-                    >
-                        {'>'}
-                    </button>
-                </div>
-                
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                    {images.map((_, i) => (
-                        <div key={i} className={`h-1 w-1 rounded-full ${i === currIdx ? 'bg-white' : 'bg-white/40'}`} />
-                    ))}
-                </div>
-            </div>
+            <Carousel images={itemImages} />
 
             <div className="p-4 flex flex-col justify-between flex-grow">
                 <div className="mb-4">

@@ -20,7 +20,7 @@ export default function ProductDetails({ item }) {
                     <div className="bg-main-pink rounded-3xl w-full max-w-md aspect-square p-2 md:p-6 flex items-center justify-center shadow-sm border-1 border-accent-green">
                         <div className="w-full h-full rounded-2xl overflow-hidden shadow-inner">
                             <Carousel images={itemImages}/>
-                        </div>
+                        </div>  
                     </div>
                 </div>
 

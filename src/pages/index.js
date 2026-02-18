@@ -20,10 +20,14 @@ export default function Home() {
             <Banner />
             <div className="h-16 w-full"/> {/* Just here for spacing */}
 
-            <main className="w-full max-w-7xl mx-auto p-4 md:p-8 pt-20">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+            <main className="w-full max-w-7xl mx-auto p-4 md:p-8 pt-20 mb-5">
+    
+                <div className="flex flex-wrap justify-center gap-10 md:gap-16">
                     {Object.entries(items).map(([key, item]) => (
-                        <Item key={key} item={item} />
+                    
+                        <div key={key} className="w-[calc(50%-1.5rem)] md:w-[calc(33%-2.5rem)] lg:w-[calc(25%-3rem)] min-w-[280px] max-w-[350px]">
+                            <Item item={item} />
+                        </div>
                     ))}
                 </div>
             </main>

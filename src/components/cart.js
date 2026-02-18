@@ -44,8 +44,8 @@ export default function Cart() {
         <div className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
             
             {/* Header */}
-            <div className="p-4 border-b border-accent-green/30 bg-white/50">
-                <h2 className="font-bold text-lg text-main-brown">Your Items</h2>
+            <div className="p-3 border-b border-accent-green/30 bg-white/50">
+                <h2 className="font-primary text-xl text-text-espresso">Your Items</h2>
             </div>
 
             {/* Scrollable area */}
@@ -67,18 +67,18 @@ export default function Cart() {
 
                                 {/* ITEM DETAILS */}
                                 <div className="flex-1 min-w-0"> {/* min-w-0 fixes text truncation */}
-                                    <h3 className="font-bold text-main-brown text-sm truncate">
+                                    <h3 className="font-primary text-text-espresso text-sm truncate">
                                         {item.item_name}
                                     </h3>
-                                    <p className="text-xs text-gray-500 truncate">
+                                    <p className="font-secondary text-xs text-gray-500 truncate">
                                         {item.id === 0 ? "Size A": "Standard Size"}
                                     </p>
                                     <div className="flex justify-between items-center mt-1">
-                                        <span className="text-sm font-semibold text-accent-green">
+                                        <span className="text-sm font-secondary text-accent-green">
                                             ${item.price.toFixed(2)}
                                         </span>
                                         <button 
-                                            className="text-xs text-red-400 hover:text-red-600 underline"
+                                            className="font-secondary text-xs text-red-400 hover:text-red-600 underline"
                                             onClick={() => updateCart(item.id, false)}
                                         >
                                             Remove
@@ -98,7 +98,7 @@ export default function Cart() {
 
             {/* Footer */}
             <div className="p-4 bg-neutral-accent border-t border-accent-green/30">
-                <button className="w-full bg-main-brown text-white py-3 rounded-md font-bold hover:brightness-110 transition-all shadow-md active:scale-95">
+                <button className="font-secondary font-semibold w-full bg-main-brown text-white py-2.5 rounded-md hover:brightness-110 transition-all shadow-md active:scale-95">
                     Checkout Now
                 </button>
             </div>

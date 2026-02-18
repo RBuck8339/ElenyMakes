@@ -18,13 +18,13 @@ export default function Carousel({ images }) {
 
     return (
         /* w-full sets the width, and aspect-square forces the height to match it perfectly */
-        <div className="relative group w-full aspect-square bg-gray-200 overflow-hidden">
+        <div className="relative group w-full aspect-square bg-transparent overflow-hidden">
             
             {/* The Image: absolute + h-full + w-full + object-cover makes it fit the square without distortion */}
             <img
                 src={displayImages[currIdx]}
                 alt={`Slide ${currIdx}`}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover rounded-2xl"
             />
 
             {/* UI Overlay (Arrows and Dots) */}

@@ -42,38 +42,49 @@ export default function Item({ item }) {
     };
 
     return (
-        <div className="flex flex-col bg-main-pink rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-100 md:h-150">
-            <Carousel images={itemImages} />
+        <div className="flex flex-col bg-main-pink rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+            <div className="p-3">
+                <Carousel images={itemImages} />
+            </div>
 
-            <div className="p-4 flex flex-col justify-between flex-grow">
-                <div className="mb-4">
-                    <h2 className="text-main-brown font-bold text-lg truncate">{item.item_name}</h2>
-                    <p className="text-main-brown/70 font-bold">{item.item_type}</p>
-                    <p className="text-main-brown/70 font-semibold">${item.price}</p>
+            {/* Increased padding to p-4 for breathing room */}
+            <div className="p-4 flex flex-col gap-3">
+                {/* Product Info */}
+                <div>
+                    <h2 className="text-text-espresso font-primary font-semibold text-xl truncate">{item.item_name}</h2>
+                    <p className="text-text-espresso/60 font-secondary">${item.price}</p>
                 </div>
                 
-                <div className="flex flex-row gap-2 h-10"> {/* Fixed height for buttons */}
+                {/* Button Stack */}
+                <div className="flex flex-col gap-2 w-full"> 
+                    {/* Primary Action: View Details */}
                     <Link 
                         href={{
-                            pathname: '/product/[slug]', // Make sure this matches your folder name!
+                            pathname: '/product/[slug]', 
                             query: { slug: itemSlug },
                         }}
-                        className="flex-1 flex"
+                        className="w-full"
                     >
-                        <button className="w-full border border-main-brown text-main-brown py-2 rounded-lg font-medium hover:bg-main-brown/5 transition-colors text-sm">
+                        <button className="w-full bg-main-brown font-secondary text-white py-2 rounded-lg hover:bg-main-brown/85 transition-all text-sm shadow-shadow-[3px_8px_12px_-4px_#B3C8BA] active:scale-[0.98]">
                             View Details
                         </button>
                     </Link>
+
+                    {/* Secondary Action: Add to Cart */}
                     <button 
-                        className="w-12 bg-other-pink1 text-white rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
+                        className={`w-full py-2 rounded-lg font-secondary transition-all flex items-center justify-center gap-2 text-sm border ${
+                            inCart 
+                            ? "bg-white border-red-200 text-main-brown hover:bg-neutral-accent hover:border-main-brown hover-border-1" 
+                            : "bg-white border-main-brown/20 text-main-brown hover:bg-neutral-accent hover:border-main-brown hover-border-1"
+                        }`}
                         onClick={handleCartToggle}
                     >
-                        {/* Ensure these paths exist in your public folder */}
                         <img 
-                            className="w-6 h-6" 
+                            className={`w-7 h-5 ${inCart ? "" : "opacity-70"}`} 
                             src={!inCart ? '/icons/cart_plus.svg' : '/icons/cart_minus.svg'} 
-                            alt={!inCart ? "Add to cart" : "Remove from cart"}
+                            alt="Cart icon"
                         />
+                        {inCart ? "Remove from Cart" : "Add to Cart"}
                     </button>
                 </div>
             </div>

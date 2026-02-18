@@ -25,7 +25,11 @@
             "Size F Hook",
             "Size 3 yarn"
         ],
-        "id": 1
+        "id": 1,
+        "images": [
+            "gallery/products/elenys-bikini-bottoms/blue_bottom.jpg",
+            "gallery/products/elenys-bikini-bottoms/brown_bottom.jpg"
+        ]
     },
     "starfish-bikini-top": {
         "img_path": "gallery/brown-bikini-top/",
@@ -38,7 +42,11 @@
             "Size 2 yarn",
             "35-40 buttons"
         ],
-        "id": 2
+        "id": 2,
+        "images": [
+            "gallery/products/starfish-bikini-top/starfish_top.jpg",
+            "gallery/products/starfish-bikini-top/starfish_closeup.jpg"
+        ]
     },
     "elenys-wave-shrug": {
         "img_path": "gallery/wave-shrug/",

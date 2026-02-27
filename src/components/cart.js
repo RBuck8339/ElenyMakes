@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import Link from 'next/link';
 import itemsData from '../../items.json';
 import { updateCart } from '../logic/updateCart';
 
@@ -98,9 +99,9 @@ export default function Cart() {
 
             {/* Footer */}
             <div className="p-4 bg-neutral-accent border-t border-accent-green/30">
-                <button className="font-secondary font-semibold w-full bg-main-brown text-white py-2.5 rounded-md hover:brightness-110 transition-all shadow-md active:scale-95">
+                <Link href="/checkout" className="block text-center font-secondary font-semibold w-full bg-main-brown text-white py-2.5 rounded-md hover:brightness-110 transition-all shadow-md active:scale-95">
                     Checkout Now
-                </button>
+                </Link>
             </div>
         </div>
     );

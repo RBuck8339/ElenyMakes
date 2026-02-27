@@ -25,7 +25,7 @@ export default function Header() {
             </div>
             {cartOpen && (
                 <div className="absolute top-16 left-0 right-0 w-full flex justify-end px-4">
-                    <Cart />
+                    <Cart closeCart={() => changeCartOpen(false)}/>
                 </div>
             )}
         </div>

@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import itemsData from '../../items.json';
 import { updateCart } from '../logic/updateCart';
 
-export default function Cart() {
+export default function Cart({ closeCart }) {
     const [cartIds, setCartIds] = useState([]);
+    const cartRef = useRef(null);
     
     const getImage = (item) => {
         if (!item) return '/gallery/tmp1.jpg';  // Fallback image
@@ -38,11 +39,22 @@ export default function Cart() {
         return () => window.removeEventListener('updateCart', refreshCart);
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (cartRef.current && !cartRef.current.contains(event.target)) {
+                if (closeCart) closeCart();
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [closeCart]);
+
     const cartItems = Object.values(itemsData).filter(item => cartIds.includes(item.id));
     const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
     return (
-        <div className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
+        <div ref={cartRef} className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
             
             {/* Header */}
             <div className="p-3 border-b border-accent-green/30 bg-white/50">
@@ -68,9 +80,18 @@ export default function Cart() {
 
                                 {/* ITEM DETAILS */}
                                 <div className="flex-1 min-w-0"> {/* min-w-0 fixes text truncation */}
-                                    <h3 className="font-primary text-text-espresso text-sm truncate">
-                                        {item.item_name}
-                                    </h3>
+                                    <Link 
+                                        href={{
+                                            pathname: '/product/[slug]', 
+                                            query: { slug: item.item_name.toLowerCase().replaceAll(' ', '_') },
+                                        }}
+                                        className="w-full"
+                                        onClick={() => closeCart && closeCart()}
+                                    >
+                                        <h3 className="font-primary text-text-espresso text-sm truncate hover:underline">
+                                            {item.item_name}
+                                        </h3>
+                                    </Link>
                                     <p className="font-secondary text-xs text-gray-500 truncate">
                                         {item.id === 0 ? "Size A": "Standard Size"}
                                     </p>
@@ -99,7 +120,11 @@ export default function Cart() {
 
             {/* Footer */}
             <div className="p-4 bg-neutral-accent border-t border-accent-green/30">
-                <Link href="/checkout" className="block text-center font-secondary font-semibold w-full bg-main-brown text-white py-2.5 rounded-md hover:brightness-110 transition-all shadow-md active:scale-95">
+                <Link 
+                    href="/checkout" 
+                    onClick={() => closeCart && closeCart()}
+                    className="block text-center font-secondary font-semibold w-full bg-main-brown text-white py-2.5 rounded-md hover:brightness-110 transition-all shadow-md active:scale-95"
+                >
                     Checkout Now
                 </Link>
             </div>

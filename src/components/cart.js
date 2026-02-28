@@ -40,15 +40,19 @@ export default function Cart({ closeCart }) {
     }, []);
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (cartRef.current && !cartRef.current.contains(event.target)) {
-                if (closeCart) closeCart();
-            }
-        };
+    const handleClickOutside = (event) => {
+        const isButtonClick = event.target.closest('button');
+        
+        if (isButtonClick) return;
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [closeCart]);
+        if (cartRef.current && !cartRef.current.contains(event.target)) {
+            if (closeCart) closeCart();
+        }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [closeCart]);
 
     const cartItems = Object.values(itemsData).filter(item => cartIds.includes(item.id));
     const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);

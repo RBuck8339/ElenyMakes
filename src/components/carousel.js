@@ -7,13 +7,17 @@ export default function Carousel({ images }) {
     const displayImages = images?.length > 0 ? images : ['/gallery/tmp1.jpg'];
 
     const nextImage = (e) => {
-        e.stopPropagation();
-        setCurrIdx((prevIdx) => (prevIdx + 1) % displayImages.length);
+        if (e) e.stopPropagation();
+        if (currIdx < displayImages.length - 1) {
+            setCurrIdx(prev => prev + 1);
+        }
     };
 
     const prevImage = (e) => {
-        e.stopPropagation();
-        setCurrIdx((prevIdx) => (prevIdx - 1 + displayImages.length) % displayImages.length);
+        if (e) e.stopPropagation();
+        if (currIdx > 0) {
+            setCurrIdx(prev => prev - 1);
+        }
     };
 
     /* For mobile swiping */

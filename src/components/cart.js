@@ -1,62 +1,47 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
-import itemsData from '../../items.json';
+import Image from 'next/image';
 import { updateCart } from '../logic/updateCart';
+import { supabase } from '../logic/supabaseClient';
+
 
 export default function Cart({ closeCart }) {
     const [cartIds, setCartIds] = useState([]);
+    const [allProducts, setAllProducts] = useState([]); // State for DB data
     const cartRef = useRef(null);
-    
-    const getImage = (item) => {
-        if (!item) return '/gallery/tmp1.jpg';  // Fallback image
-
-        let imagePath = '';
-
-        if (item.images && item.images.length > 0){
-            imagePath = item.images[0];
-        }
-        else{
-            imagePath = '/gallery/tmp1.jpg';
-        }
-        return imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-    }
 
     useEffect(() => {
-        // defined inside useEffect so it has access to latest scope if needed
         const refreshCart = () => {
-            // Safety check for null (just in case)
             const stored = localStorage.getItem('cart_ids');
             setCartIds(stored ? JSON.parse(stored) : []);
         };
 
-        // 1. Run immediately on mount
+        // Fetch product info from Supabase on mount
+        const fetchProducts = async () => {
+            const { data } = await supabase.from('products').select('*');
+            setAllProducts(data || []);
+        };
+
         refreshCart();
+        fetchProducts();
 
-        // 2. Listen for updates
         window.addEventListener('updateCart', refreshCart);
-
-        // 3. Cleanup
         return () => window.removeEventListener('updateCart', refreshCart);
     }, []);
 
-    useEffect(() => {
-    const handleClickOutside = (event) => {
-        const isButtonClick = event.target.closest('button');
-        
-        if (isButtonClick) return;
-
-        if (cartRef.current && !cartRef.current.contains(event.target)) {
-            if (closeCart) closeCart();
+    const getImage = (item) => {
+        if (!item || !item.images || item.images.length === 0) {
+            return '/gallery/tmp1.jpg'; // Fallback
         }
+        const path = item.images[0];
+        // Ensure it starts with a leading slash for the Next.js public folder
+        return path.startsWith('/') ? path : `/${path}`;
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-}, [closeCart]);
-
-    const cartItems = Object.values(itemsData).filter(item => cartIds.includes(item.id));
-    const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
-
+    // Filter DB products based on IDs in local storage
+    const cartItems = allProducts.filter(item => cartIds.includes(item.id));
+    const totalPrice = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
+    
     return (
         <div ref={cartRef} className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
             
@@ -74,11 +59,13 @@ export default function Cart({ closeCart }) {
                             <div key={item.id} className="flex items-center gap-3 border-b border-gray-100 pb-3 last:border-0">
                                 
                                 {/* IMAGE THUMBNAIL */}
-                                <div className="h-16 w-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
-                                    <img 
+                                <div className="h-16 w-16 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
+                                    <Image 
                                         src={getImage(item)} 
                                         alt={item.item_name}
-                                        className="h-full w-full object-cover"
+                                        fill
+                                        sizes="64px"
+                                        className="object-cover"
                                     />
                                 </div>
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import itemsData from '../../../items.json';
 import Header from '../../components/header';
 import Carousel from '../../components/carousel';
 import {updateCart} from '../../logic/updateCart';
 import useIsMobile from '../../logic/useIsMobile';
+import { supabase } from '../../logic/supabaseClient';
 
 
 // Makes the colors visibly stand out more
@@ -21,6 +21,7 @@ const COLOR_MAP = {
 const getLightVersion = (hex) => `${hex}66`;
 
 export default function ProductDetails({ item }) {
+    if (!item) return <div>Product not found</div>;
     // Get the images for the item, we will replicate the carousel from the <Item> component here
     const itemImages = item.images?.length > 0 
         ? item.images.map(img => img.startsWith('/') ? img : `/${img}`)
@@ -66,7 +67,8 @@ export default function ProductDetails({ item }) {
 
 
 function MobileView({ item, inCart, handleCartToggle, itemImages }) { 
-  return (
+    if (!item) return null;
+    return (
     <div className="flex flex-col min-h-screen bg-background w-full overflow-y-auto">
         <Header />
         
@@ -158,10 +160,11 @@ function MobileView({ item, inCart, handleCartToggle, itemImages }) {
                     </button>
 
                     {inCart && (
-                        <Link href="/checkout" className="flex-1">
-                            <button className="w-full h-full bg-main-brown text-white py-4 rounded-xl font-bold text-base shadow-sm active:scale-95 transition-all truncate px-2">
-                                Checkout
-                            </button>
+                        <Link
+                            href="/checkout"
+                            className="flex-1 bg-main-brown text-white py-4 rounded-xl font-bold text-lg md:text-xl shadow-md hover:brightness-110 active:scale-95 transition-all text-center flex items-center justify-center px-2"
+                        >
+                            Checkout
                         </Link>
                     )}
                 </div>
@@ -173,7 +176,8 @@ function MobileView({ item, inCart, handleCartToggle, itemImages }) {
 
 
 function DesktopView({ item, inCart, handleCartToggle, itemImages }) { 
-  return (
+    if (!item) return null;
+    return (
         <div className="flex flex-col h-screen bg-background w-full overflow-hidden">
             <Header />
             
@@ -260,11 +264,9 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
                         {inCart && (
                             <Link
                                 href="/checkout"
-                                className="flex-1" /* This makes the link occupy the same width as the first button */
+                                className="flex-1 bg-main-brown text-white py-4 rounded-xl font-bold text-lg md:text-xl shadow-md hover:brightness-110 active:scale-95 transition-all text-center flex items-center justify-center px-2"
                             >
-                                <button className="w-full h-full bg-main-brown text-white py-4 rounded-xl font-bold text-lg md:text-xl shadow-md hover:brightness-110 active:scale-95 transition-all truncate px-2">
-                                    Proceed to Checkout
-                                </button>
+                                Proceed to Checkout
                             </Link>
                         )}
                     </div>
@@ -277,19 +279,24 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
 
 
 export async function getStaticPaths() {
-    const paths = Object.values(itemsData).map((item) => ({
-        params: { slug: item.item_name.toLowerCase().replaceAll(' ', '_') }
+    const { data: products } = await supabase.from('products').select('slug');
+
+    const paths = products.map((product) => ({
+        params: { slug: product.slug } // Using the actual 'slug' column from DB
     }));
 
     return { paths, fallback: false };
 }
 
 export async function getStaticProps({ params }) {
-    const item = Object.values(itemsData).find(
-        (i) => i.item_name.toLowerCase().replaceAll(' ', '_') === params.slug
-    );
+    // Fetch the single product matching this slug
+    const { data: item, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('slug', params.slug)
+        .single();
 
     return { 
-        props: { item } 
+        props: { item: item || null } 
     };
 }

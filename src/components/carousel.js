@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 export default function Carousel({ images }) {
     const [currIdx, setCurrIdx] = useState(0);
@@ -42,11 +43,16 @@ export default function Carousel({ images }) {
         onTouchEnd={handleTouchEnd}>
             
             {/* The Image: absolute + h-full + w-full + object-cover makes it fit the square without distortion */}
-            <img
-                src={displayImages[currIdx]}
-                alt={`Slide ${currIdx}`}
-                className="absolute inset-0 w-full h-full object-cover rounded-2xl"
-            />
+            <div className="relative w-full h-full"> 
+                <Image
+                    src={displayImages[currIdx]}
+                    alt={`Slide ${currIdx}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw" // Helps Next.js optimize the size
+                    className="object-cover rounded-2xl"
+                    priority={currIdx === 0} // Loads the first slide immediately
+                />
+            </div>
 
             {/* UI Overlay (Arrows and Dots) */}
             {displayImages.length > 1 && (

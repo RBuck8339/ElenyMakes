@@ -60,6 +60,7 @@ export const ReceiptEmailTemplate = ({ items, orderId, num_emails }) => (
           </Text>
 
           <Section className="border-t border-b border-accent-green py-4 my-6">
+            {/* Could add images here */}
             {items.map((item, index) => (
               <Row key={index} className="py-2">
                 <Column className="font-secondary text-text-espresso">{item.name}</Column>

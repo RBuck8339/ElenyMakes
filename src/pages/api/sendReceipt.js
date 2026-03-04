@@ -1,7 +1,7 @@
 import { ReceiptEmailTemplate } from "../../components/receiptTemplate";
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
 export default async function receiptHandler(req, res) {
     // Destructure the data sent from the first function
@@ -9,9 +9,9 @@ export default async function receiptHandler(req, res) {
 
     try {
         // Map the item strings to the object format your template expects
-        const templateItems = items.map(name => ({
-            name: name.replace('.pdf', ''),
-            price: "5.00"
+        const templateItems = items.map(product => ({
+            name: product.item_name, 
+            price: Number(product.price).toFixed(2) 
         }));
 
         const { data, error } = await resend.emails.send({
@@ -24,7 +24,6 @@ export default async function receiptHandler(req, res) {
                 num_emails 
             })
         });
-
         if (error) throw error;
 
         return res.status(200).json({ message: "Receipt sent!", data });

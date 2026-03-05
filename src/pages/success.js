@@ -6,9 +6,9 @@ export default function Success() {
     const router = useRouter();
     const {orderId} = router.query;
     return(
-        <div className="flex flex-col bg-background min-h-screen w-full justify-center">
+        <div className="flex flex-col bg-background h-[100dvh] w-full justify-center">
             <Header />
-            <div className="max-w-3xl mx-auto bg-main-pink/30 border-2 border-dashed border-main-brown/20 rounded-3xl p-8 md:p-12 text-center shadow-sm">
+            <div className="max-w-7/8 md:max-w-3xl mx-auto bg-main-pink/30 border-2 border-dashed border-main-brown/20 rounded-3xl p-6 md:p-12 text-center shadow-sm">
                 <h2 className="text-2xl font-bold text-text-espresso mb-4">
                     Thank you for supporting Eleny Makes 
                 </h2>

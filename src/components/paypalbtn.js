@@ -98,7 +98,7 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
     };
 
     return (
-        <div className="relative flex flex-col w-full h-full justify-center items-center">
+        <div className="relative w-full max-w-md mx-auto mt-8 flex flex-col items-center">
             {isProcessing && (
                 <div className="absolute inset-0 z-10 bg-white/80 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm">
                     <div className="w-8 h-8 border-4 border-accent-green border-t-transparent rounded-full animate-spin mb-2"></div>
@@ -108,7 +108,8 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
 
             <PayPalScriptProvider options={initialOptions}>
                 <PayPalButtons 
-                    style={{ layout: "vertical", shape: "rect", color: "gold" }}
+                    style={{ layout: "vertical", shape: "rect", color: "gold", label:"pay" }}
+                    className="w-full"
                     createOrder={createOrder}
                     onApprove={onApprove}
                     onError={onError}

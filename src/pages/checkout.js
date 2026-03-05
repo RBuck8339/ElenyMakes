@@ -1,5 +1,6 @@
 import Header from "../components/header";
 import PayPalBtn from "../components/paypalbtn";
+import Disclaimer from "../components/disclaimer";
 import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -17,7 +18,7 @@ export default function Checkout(){
     
     const getImage = (item) => {
         if (!item || !item.images || item.images.length === 0) {
-            return '/gallery/tmp1.jpg'; // Fallback
+            return '/gallery/placeholder.webp'; // Fallback
         }
         const path = item.images[0];
         // Ensure it starts with a leading slash for the Next.js public folder
@@ -63,114 +64,107 @@ export default function Checkout(){
     const showEmailError = isTouched && !isValidEmail && customerEmail !== '';
 
     return (
-        <>
-            <div className="block md:hidden">
-                
-            </div>
+        <div className="block">
+            <div className="bg-background min-h-screen w-full">
+                <Header />
+                <div className="flex flex-row min-h-screen w-full pt-16 justify-center">
+                    <div className="w-full md:w-2/3 flex flex-col p-8 gap-5">
+                        <div className="bg-neutral-accent border-2 border-accent-green rounded-lg p-3 m-2">
+                            {/* Header */}
+                            <div className="p-3 border-b border-accent-green/30 bg-white/50">
+                                <h2 className="font-primary text-xl text-text-espresso">Your Items</h2>
+                            </div>
 
-            {/* Desktop Layout */}
-            <div className="hidden md:block">
-                <div className="bg-background min-h-screen w-full">
-                    <Header />
-                    <div className="flex flex-row min-h-screen w-full pt-16">
-                        {/* Left Side: Show off the users items */}
-                        <div className="w-1/2 flex flex-col p-10 gap-5">
-                            <div className="bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
-                                {/* Header */}
-                                <div className="p-3 border-b border-accent-green/30 bg-white/50">
-                                    <h2 className="font-primary text-xl text-text-espresso">Your Items</h2>
-                                </div>
+                            {/* Scrollable area */}
+                            <div className="flex-1 overflow-y-auto p-4 bg-white">
+                                {cartIds.length > 0 ? (
+                                    <div className="space-y-2">
+                                        {cartItems.map((item) => (
+                                            // RENDER EACH ITEM
+                                            <div key={item.id} className="flex items-center gap-3 border-b border-gray-100 pb-3 last:border-0">
+                                                
+                                                {/* IMAGE THUMBNAIL */}
+                                                <div className="h-16 w-16 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
+                                                    <Image 
+                                                        src={getImage(item)} 
+                                                        alt={item.item_name}
+                                                        fill
+                                                        sizes="64px"
+                                                        className="object-cover"
+                                                    />
+                                                </div>
 
-                                {/* Scrollable area */}
-                                <div className="flex-1 overflow-y-auto p-4 bg-white">
-                                    {cartIds.length > 0 ? (
-                                        <div className="space-y-2">
-                                            {cartItems.map((item) => (
-                                                // RENDER EACH ITEM
-                                                <div key={item.id} className="flex items-center gap-3 border-b border-gray-100 pb-3 last:border-0">
-                                                    
-                                                    {/* IMAGE THUMBNAIL */}
-                                                    <div className="h-16 w-16 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
-                                                        <Image 
-                                                            src={getImage(item)} 
-                                                            alt={item.item_name}
-                                                            fill
-                                                            sizes="64px"
-                                                            className="object-cover"
-                                                        />
-                                                    </div>
-
-                                                    {/* ITEM DETAILS */}
-                                                    <div className="flex-1 min-w-0"> {/* min-w-0 fixes text truncation */}
-                                                        <Link 
-                                                            href={{
-                                                                pathname: '/product/[slug]', 
-                                                                query: { slug: item.item_name.toLowerCase().replaceAll(' ', '_') },
-                                                            }}
-                                                            className="w-full"
-                                                            onClick={() => closeCart && closeCart()}
+                                                {/* ITEM DETAILS */}
+                                                <div className="flex-1 min-w-0"> {/* min-w-0 fixes text truncation */}
+                                                    <Link 
+                                                        href={{
+                                                            pathname: '/product/[slug]', 
+                                                            query: { slug: item.item_name.toLowerCase().replaceAll(' ', '_') },
+                                                        }}
+                                                        className="w-full"
+                                                        onClick={() => closeCart && closeCart()}
+                                                    >
+                                                        <h3 className="font-primary text-text-espresso text-sm truncate hover:underline">
+                                                            {item.item_name}
+                                                        </h3>
+                                                    </Link>
+                                                    <p className="font-secondary text-xs text-gray-500 truncate">
+                                                        {item.id === 0 ? "Size A": "Standard Size"}
+                                                    </p>
+                                                    <div className="flex justify-between items-center mt-1">
+                                                        <span className="text-sm font-secondary text-accent-green">
+                                                            ${item.price.toFixed(2)}
+                                                        </span>
+                                                        <button 
+                                                            className="font-secondary text-xs text-red-400 hover:text-red-600 underline"
+                                                            onClick={() => updateCart(item.id, false)}
                                                         >
-                                                            <h3 className="font-primary text-text-espresso text-sm truncate hover:underline">
-                                                                {item.item_name}
-                                                            </h3>
-                                                        </Link>
-                                                        <p className="font-secondary text-xs text-gray-500 truncate">
-                                                            {item.id === 0 ? "Size A": "Standard Size"}
-                                                        </p>
-                                                        <div className="flex justify-between items-center mt-1">
-                                                            <span className="text-sm font-secondary text-accent-green">
-                                                                ${item.price.toFixed(2)}
-                                                            </span>
-                                                            <button 
-                                                                className="font-secondary text-xs text-red-400 hover:text-red-600 underline"
-                                                                onClick={() => updateCart(item.id, false)}
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        </div>
+                                                            Remove
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="flex flex-col items-center justify-center h-full text-center opacity-60">
-                                            {/* Optional: Add a sad yarn ball icon here */}
-                                            <p className="text-sm text-gray-500 italic">Your cart is currently empty...</p>
-                                        </div>
-                                    )}
-                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center h-full text-center opacity-60">
+                                        {/* Optional: Add a sad yarn ball icon here */}
+                                        <p className="text-sm text-gray-500 italic">Your cart is currently empty...</p>
+                                    </div>
+                                )}
                             </div>
-                            
 
-                        </div>
-                        {/* Right Side: Checkout form with PayPal */}
-                        <div className="w-1/2 flex flex-col">
-                            <div className="flex flex-col align-middle justify-center h-9/10">
-                                <div className="w-full">
-                                    <input 
-                                        type="email"
-                                        placeholder="Where should we send your patterns?"
-                                        value={customerEmail}
-                                        onChange={(e) => setCustomerEmail(e.target.value)}
-                                        // 1. This triggers when the user clicks AWAY (not focus)
-                                        onBlur={() => setIsTouched(true)} 
-                                        className={`w-full p-4 rounded-xl border-2 outline-none transition-all font-secondary
-                                            ${showEmailError ? 'border-red-400 bg-red-50' : 'border-main-pink/20 focus:border-accent-green'}
-                                        `}
-                                    />
-                                    
-                                    {showEmailError && (
-                                        <p className="text-xs text-center text-red-500 mt-2 animate-pulse">
-                                            Oops! That doesn't look like a valid email.
-                                        </p>
-                                    )}
-                                </div>
-                                <PayPalBtn amount={totalPrice} items={pdfNames} email={customerEmail} receiptItems={cartItems}/>
+                            <hr className="border-t border-main-brown my-4"/>
+                            <h3 className="font-primary text-xl text-text-espresso"><u>Order Destination:</u></h3>
+                            <div className="w-full">
+                                <input 
+                                    type="email"
+                                    placeholder="Where should we send your patterns?"
+                                    value={customerEmail}
+                                    onChange={(e) => setCustomerEmail(e.target.value)}
+                                    // 1. This triggers when the user clicks AWAY (not focus)
+                                    onBlur={() => setIsTouched(true)} 
+                                    className={`w-full p-4 rounded-xl border-2 border-accent-green/30 bg-white/50 outline-none transition-all font-secondary focus:bg-white
+                                        ${showEmailError ? 'border-red-400 bg-red-50' : 'border-main-pink/20 focus:border-accent-green'}
+                                    `}
+                                />
+                                
+                                {showEmailError && (
+                                    <p className="text-xs text-center text-red-500 mt-2 animate-pulse">
+                                        Oops! That doesn't look like a valid email.
+                                    </p>
+                                )}
                             </div>
+                            <div className="flex flex-row justify-between mt-3">
+                                <h2 className="font-primary text-xl text-text-espresso">Total Price:</h2>
+                                <h2 className="font-primary text-xl text-text-espresso"><u>${totalPrice.toFixed(2)}</u></h2>
+                            </div>
+                            <PayPalBtn amount={totalPrice} items={pdfNames} email={customerEmail} receiptItems={cartItems}/>
                         </div>
+                        <Disclaimer />
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

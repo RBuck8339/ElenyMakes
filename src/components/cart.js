@@ -31,7 +31,7 @@ export default function Cart({ closeCart }) {
 
     const getImage = (item) => {
         if (!item || !item.images || item.images.length === 0) {
-            return '/gallery/tmp1.jpg'; // Fallback
+            return '/gallery/placeholder.webp'; // Fallback
         }
         const path = item.images[0];
         // Ensure it starts with a leading slash for the Next.js public folder

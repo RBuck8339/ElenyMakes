@@ -91,8 +91,8 @@ function MobileView({ item, inCart, handleCartToggle, itemImages }) {
                         {`${item.item_type} Pattern` || 'Original Design'}
                     </p>
                 </div>
-
-                <p className="text-2xl font-semibold text-accent-green">${item.price}</p>
+        
+                <p className="text-2xl font-semibold text-accent-green">${Number(item.price).toFixed(2)}</p>
                 
                 <div className="space-y-1">
                     <h3 className="font-bold text-text-espresso text-sm">Description:</h3>
@@ -198,7 +198,7 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
                         <p className="text-sm font-bold text-text-espresso/50 uppercase tracking-widest">{`${item.item_type} Pattern` || 'Original Design'}</p>
                     </div>
 
-                    <p className="text-4xl font-semibold text-accent-green">${item.price}</p>
+                    <p className="text-4xl font-semibold text-accent-green">${Number(item.price).toFixed(2)}</p>
                     
                     <div className="max-w-xl">
                         <h3 className="font-bold text-text-espresso mb-2 text-lg">Description:</h3>

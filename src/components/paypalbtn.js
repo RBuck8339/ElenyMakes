@@ -98,7 +98,7 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
     };
 
     return (
-        <div className="relative w-full max-w-md mx-auto mt-8 flex flex-col items-center">
+        <div className="relative z-10 w-full max-w-md mx-auto mt-8 flex flex-col items-center">
             {isProcessing && (
                 <div className="absolute inset-0 z-10 bg-white/80 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm">
                     <div className="w-8 h-8 border-4 border-accent-green border-t-transparent rounded-full animate-spin mb-2"></div>

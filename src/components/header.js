@@ -10,7 +10,7 @@ export default function Header() {
     }
 
     return (
-        <div className="fixed top-0 left-0 w-full z-[100] flex flex-col">
+        <div className="fixed top-0 left-0 w-full z-100 flex flex-col">
             
             <div className="relative flex flex-row items-center bg-accent-pink h-16 px-4
                 border-t border-white/20 

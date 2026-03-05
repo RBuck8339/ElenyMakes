@@ -62,25 +62,38 @@ export default function Item({ item }) {
                     </Link>
 
                     {/* Secondary Action: Add to Cart */}
-                    <button 
-                        className={`w-full py-2 rounded-lg font-secondary transition-all flex items-center justify-center gap-2 text-sm border ${
-                            inCart 
-                            ? "bg-white border-red-200 text-main-brown" 
-                            : "bg-white border-main-brown/20 text-main-brown"
-                        } hover:bg-neutral-accent hover:border-main-brown`}
-                        onClick={handleCartToggle}
-                    >
-                        {/* Use Next.js Image for the icon */}
-                        <div className="relative w-6 h-5">
-                            <Image 
-                                src={!inCart ? '/icons/cart_plus.svg' : '/icons/cart_minus.svg'} 
-                                alt="Cart icon"
-                                fill
-                                className={`object-contain ${inCart ? "" : "opacity-70"}`}
-                            />
-                        </div>
-                        {inCart ? "Remove" : "Add to Cart"}
-                    </button>
+                    {item.pattern_exists === true ? (
+                        <>
+                            <button 
+                                className={`w-full py-2 rounded-lg font-secondary transition-all flex items-center justify-center gap-2 text-sm border ${
+                                    inCart 
+                                    ? "bg-white border-red-200 text-main-brown" 
+                                    : "bg-white border-main-brown/20 text-main-brown"
+                                } hover:bg-neutral-accent hover:border-main-brown`}
+                                onClick={handleCartToggle}
+                            >
+                                {/* Use Next.js Image for the icon */}
+                                <div className="relative w-6 h-5">
+                                    <Image 
+                                        src={!inCart ? '/icons/cart_plus.svg' : '/icons/cart_minus.svg'} 
+                                        alt="Cart icon"
+                                        fill
+                                        className={`object-contain ${inCart ? "" : "opacity-70"}`}
+                                    />
+                                </div>
+                                {inCart ? "Remove" : "Add to Cart"}
+                            </button>
+                        </>
+                    ) : (
+                        <button 
+                            disabled
+
+                            className="w-full py-2 rounded-lg font-secondary transition-all flex items-center justify-center gap-2 text-sm border bg-white border-main-brown/20 text-gray-800 opacity-75 cursor-not-allowed"
+                        >
+                            Pattern Coming Soon
+                        </button>
+                    )}
+                    
                 </div>
             </div>
         </div>

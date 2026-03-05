@@ -5,7 +5,7 @@ export default function Carousel({ images }) {
     const [currIdx, setCurrIdx] = useState(0);
 
     // Fallback logic for images
-    const displayImages = images?.length > 0 ? images : ['/gallery/tmp1.jpg'];
+    const displayImages = images?.length > 0 ? images : ['/gallery/placeholder.webp'];
 
     const nextImage = (e) => {
         if (e) e.stopPropagation();

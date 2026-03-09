@@ -150,23 +150,32 @@ function MobileView({ item, inCart, handleCartToggle, itemImages }) {
 
                 {/* The Stable Button Row */}
                 <div className="flex flex-row gap-3 w-full pt-4 min-h-[64px]">
-                    <button 
-                        className={`bg-other-pink1 text-white py-4 rounded-xl font-bold text-base shadow-sm active:scale-95 
-                                   transition-all duration-300 ease-in-out truncate px-2
-                                   ${inCart ? 'flex-1' : 'w-full'}`}
-                        onClick={handleCartToggle}
-                    >
-                        {inCart ? "Remove" : "Add to Cart"}
-                    </button>
-
-                    {inCart && (
-                        <Link
-                            href="/checkout"
-                            className="flex-1 bg-main-brown text-white py-4 rounded-xl font-bold text-lg md:text-xl shadow-md hover:brightness-110 active:scale-95 transition-all text-center flex items-center justify-center px-2"
-                        >
-                            Checkout
-                        </Link>
-                    )}
+                    {item.pattern_exists === true ? (
+                            <>
+                                <button 
+                                    className={`bg-other-pink1 text-white py-4 rounded-xl font-bold text-lg md:text-xl shadow-md hover:brightness-105 active:scale-95 transition-all truncate px-2 ${inCart ? 'flex-1' : 'w-full'}`}
+                                    onClick={handleCartToggle}
+                                >
+                                    {inCart ? "Remove from Cart" : "Add to Cart"}
+                                </button>
+                                
+                                {inCart && (
+                                    <Link
+                                        href="/checkout"
+                                        className="flex-1 bg-main-brown text-white py-4 rounded-xl font-bold text-lg md:text-xl shadow-md hover:brightness-110 active:scale-95 transition-all text-center flex items-center justify-center px-2"
+                                    >
+                                        Proceed to Checkout
+                                    </Link>
+                                )}
+                            </>
+                        ) : (
+                            <button 
+                                disabled
+                                className="w-full bg-gray-300 text-gray-500 py-4 rounded-xl font-bold text-lg md:text-xl cursor-not-allowed opacity-75"
+                            >
+                                Pattern Coming Soon
+                            </button>
+                        )}
                 </div>
             </div>
         </div>

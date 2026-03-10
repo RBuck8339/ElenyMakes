@@ -316,33 +316,21 @@ export async function getStaticPaths(context) {
     }
 }
 
-export async function getStaticProps({ params, env }) {
-    try {
-        // Fetch single product from D1
-        const item = await env.DB.prepare(
-            "SELECT * FROM products WHERE slug = ?"
-        )
-        .bind(params.slug)
-        .first();
+export async function getStaticProps() {
+  try {
+    // Point this to your LIVE production URL
+    const res = await fetch('https://elenymakes.com/api/products');
+    
+    if (!res.ok) throw new Error("API responded with an error");
+    
+    const products = await res.json();
 
-        if (!item) {
-            return { notFound: true };
-        }
-
-        // Parse JSON strings back into arrays and handle Boolean
-        const formattedItem = {
-            ...item,
-            images: JSON.parse(item.images || "[]"),
-            materials: JSON.parse(item.materials || "[]"),
-            colors: JSON.parse(item.colors || "[]"),
-            pattern_exists: Boolean(item.pattern_exists)
-        };
-
-        return { 
-            props: { item: formattedItem } 
-        };
-    } catch (err) {
-        console.error("D1 props error:", err);
-        return { notFound: true };
-    }
+    return {
+      props: { products },
+      revalidate: false // Site remains static until next deploy
+    };
+  } catch (error) {
+    console.error("Build-time fetch failed:", error);
+    return { props: { products: [] } };
+  }
 }

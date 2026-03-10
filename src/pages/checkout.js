@@ -97,7 +97,7 @@ export default function Checkout(){
                                                     <Link 
                                                         href={{
                                                             pathname: '/product/[slug]', 
-                                                            query: { slug: item.slug },
+                                                            query: { slug: item.item_name.toLowerCase().replaceAll(' ', '_') },
                                                         }}
                                                         className="w-full"
                                                         onClick={() => closeCart && closeCart()}
@@ -139,7 +139,7 @@ export default function Checkout(){
                                     type="email"
                                     placeholder="Where should we send your patterns?"
                                     value={customerEmail}
-                                    onChange={handleEmailChange}
+                                    onChange={(e) => setCustomerEmail(e.target.value)}
                                     // 1. This triggers when the user clicks AWAY (not focus)
                                     onBlur={() => setIsTouched(true)} 
                                     className={`w-full p-4 rounded-xl border-2 border-accent-green/30 bg-white/50 outline-none transition-all font-secondary focus:bg-white
@@ -155,7 +155,7 @@ export default function Checkout(){
                             </div>
                             <div className="flex flex-row justify-between mt-3">
                                 <h2 className="font-primary text-xl text-text-espresso">Total Price:</h2>
-                                <h2 className="font-primary text-xl text-text-espresso">$<u>{totalPrice.toFixed(2)}</u></h2>
+                                <h2 className="font-primary text-xl text-text-espresso"><u>${totalPrice.toFixed(2)}</u></h2>
                             </div>
                             <PayPalBtn amount={totalPrice} items={pdfNames} email={customerEmail} receiptItems={cartItems}/>
                         </div>

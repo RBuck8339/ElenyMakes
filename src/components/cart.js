@@ -19,13 +19,22 @@ export default function Cart({ closeCart }) {
                 const res = await fetch('/api/products');
                 const data = await res.json();
                 
-                // Wrangler --json returns [{ results: [...] }]
-                // We must ensure we set an array to state
-                const actualProducts = Array.isArray(data) ? data[0].results : (data.results || []);
-                setAllProducts(actualProducts);
+                // 1. Get the raw array regardless of Wrangler wrapper
+                const rawResults = Array.isArray(data) ? data[0].results : (data.results || data);
+
+                // 2. PARSE THE DATA: This is what's missing!
+                // We must convert the database strings back into usable Javascript arrays
+                const formattedProducts = rawResults.map(p => ({
+                    ...p,
+                    images: typeof p.images === 'string' ? JSON.parse(p.images || "[]") : (p.images || []),
+                    materials: typeof p.materials === 'string' ? JSON.parse(p.materials || "[]") : (p.materials || []),
+                    colors: typeof p.colors === 'string' ? JSON.parse(p.colors || "[]") : (p.colors || []),
+                }));
+
+                setAllProducts(formattedProducts);
             } catch (err) {
                 console.error("Failed to load products for cart:", err);
-                setAllProducts([]); // Fallback to empty array on error
+                setAllProducts([]);
             }
         };
 

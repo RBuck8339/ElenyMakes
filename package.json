@@ -2,7 +2,10 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start"
+        "start": "next start",
+        "lint": "next lint",
+        "deploy": "npx @opennextjs/cloudflare build && npx wrangler deploy",
+        "preview": "npx @opennextjs/cloudflare build && npx wrangler dev"
     },
     "dependencies": {
         "@paypal/react-paypal-js": "^9.0.1",
@@ -18,6 +21,7 @@
         "supabase": "^2.76.14"
     },
     "devDependencies": {
+        "@opennextjs/cloudflare": "^1.17.1",
         "@tailwindcss/postcss": "^4.1.18",
         "autoprefixer": "^10.4.24",
         "postcss": "^8.5.6",

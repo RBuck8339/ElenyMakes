@@ -37,24 +37,22 @@ export default function Home({products}) {
 
 export async function getStaticProps() {
   try {
-    // 1. Point this to your LIVE URL (elenymakes.com)
-    // The build bot will fetch your data from the live API
     const res = await fetch('https://elenymakes.com/api/products');
     
     if (!res.ok) {
-        throw new Error(`Build-time fetch failed with status: ${res.status}`);
+        console.warn("API not ready. Building empty shell.");
+        // Revalidate: 10 means "try to rebuild this in 10 seconds"
+        return { props: { products: [] }, revalidate: 10 };
     }
     
     const products = await res.json();
 
     return {
       props: { products },
-      // This makes the page 100% static until your next deployment
       revalidate: false 
     };
   } catch (error) {
     console.error("Static Build Error:", error.message);
-    // Fallback so the build doesn't fail, but check your logs!
-    return { props: { products: [] } };
+    return { props: { products: [] }, revalidate: 10 };
   }
 }

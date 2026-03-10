@@ -298,31 +298,39 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
 
 
 
-export async function getStaticPaths(context) {
-    const { env } = context;
+export async function getStaticPaths() {
+  try {
+    const res = await fetch('https://elenymakes.com/api/products');
     
-    try {
-        // Query D1 for all existing slugs
-        const { results } = await env.DB.prepare("SELECT slug FROM products").all();
-        
-        const paths = results.map((product) => ({
-            params: { slug: product.slug }
-        }));
-
-        return { paths, fallback: 'blocking' }; 
-    } catch (error) {
-        console.error("D1 paths error:", error);
+    if (!res.ok) {
+        // Fallback for the first "bootstrap" build
         return { paths: [], fallback: 'blocking' };
     }
+    
+    const products = await res.json();
+    
+    const paths = products.map((product) => ({
+      params: { slug: product.slug },
+    }));
+
+    return { paths, fallback: 'blocking' };
+  } catch (error) {
+    // If API isn't live yet, don't crash the build
+    return { paths: [], fallback: 'blocking' };
+  }
 }
 
+// 2. Fetch the data for a specific slug
 export async function getStaticProps({ params }) {
   const { slug } = params;
   try {
     const res = await fetch(`https://elenymakes.com/api/products`);
-    const allProducts = await res.json();
     
+    if (!res.ok) return { notFound: true };
+    
+    const allProducts = await res.json();
     const item = allProducts.find(p => p.slug === slug);
+    
     if (!item) return { notFound: true };
 
     return {

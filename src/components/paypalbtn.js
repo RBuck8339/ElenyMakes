@@ -78,20 +78,22 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
             {amount > 0 ? (
                 <PayPalScriptProvider options={initialOptions}>
                     <PayPalButtons 
-                        style={{ layout: "vertical", shape: "rect", color: "gold", label:"pay" }}
+                        style={{ layout: "vertical", shape: "rect", color: "gold", label: "pay" }}
                         className="w-full"
                         createOrder={createOrder}
                         onApprove={onApprove}
                         onError={onError}
                     />
-                </PayPalScriptProvider> 
-            ) : (
+                </PayPalScriptProvider>
+            ) : items.length > 0 ? ( // Fixed: Braces removed from here
                 <button 
                     className="w-full group relative px-8 py-4 bg-accent-green border-2 border-main-brown rounded-xl font-primary text-text-espresso transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:text-white active:translate-y-0"
                     onClick={handleFreeOrder}
                 >
                     <span className="relative z-10 font-bold"><u>Get My Free Patterns</u></span>
                 </button>
+            ) : ( // Fixed: Braces removed from here
+                <></>
             )}
         </div>
     );

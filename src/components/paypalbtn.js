@@ -17,6 +17,26 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
         "enable-funding": "venmo"
     };
 
+    const createOrder = (data, actions) => {
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: amount.toFixed(2),
+                },
+                description: "Eleny Makes Digital Crochet Patterns"
+            }],
+            payment_source: {
+                paypal: {
+                    experience_context: {
+                        shipping_preference: "NO_SHIPPING",
+                        user_action: "PAY_NOW",
+                        brand_name: "Eleny Makes"
+                    }
+                }
+            }
+        });
+    };
+
     const fulfillOrder = async (orderId) => {
         setIsProcessing(true);
         try {

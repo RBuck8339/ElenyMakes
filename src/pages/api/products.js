@@ -1,11 +1,17 @@
-// 1. REMOVE the edge config line. It's causing the crash.
-
 export default async function handler(req, res) {
-  // 2. OpenNext injects the Cloudflare 'env' into the request object
-  const env = req.env || process.env; 
+  // 1. Check every possible location Cloudflare/OpenNext places the bindings
+  const env = req.env || 
+              req.context?.cloudflare?.env || 
+              process.env || 
+              globalThis;
 
+  // 2. Debugging: If it still fails, we want to see what IS available
   if (!env || !env.DB) {
-    return res.status(500).json({ error: "D1 Database binding 'DB' not found." });
+    console.error("Environment check failed. Keys found:", Object.keys(env || {}));
+    return res.status(500).json({ 
+      error: "D1 Database binding 'DB' not found.",
+      available_keys: Object.keys(env || {}) 
+    });
   }
 
   try {
@@ -13,7 +19,6 @@ export default async function handler(req, res) {
     
     const products = results.map(p => ({
       ...p,
-      // Safely parse JSON strings from D1
       images: JSON.parse(p.images || "[]"),
       materials: JSON.parse(p.materials || "[]"),
       colors: JSON.parse(p.colors || "[]"),

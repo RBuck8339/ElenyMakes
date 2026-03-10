@@ -1,11 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Your existing shop settings, e.g., Supabase image domains
     images: {
         remotePatterns: [{
             protocol: 'https',
-            hostname: 'your-id.supabase.co',
+            hostname: '*.supabase.co', // Use * to catch any ID
         }, ],
+    },
+    // ADD THIS SECTION:
+    async headers() {
+        return [{
+            source: '/gallery/:path*',
+            headers: [{
+                key: 'Cache-Control',
+                value: 'public, max-age=31536000, immutable',
+            }, ],
+        }, ];
     },
 };
 

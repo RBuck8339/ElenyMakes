@@ -50,7 +50,9 @@ export default function Carousel({ images }) {
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw" // Helps Next.js optimize the size
                     className="object-cover rounded-2xl"
-                    priority={currIdx === 0} // Loads the first slide immediately
+                    placeholder="blur"
+                    priority={currIdx === 0} 
+                    loading={currIdx === 0 ? undefined : "lazy"}
                 />
             </div>
 

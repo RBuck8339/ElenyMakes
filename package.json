@@ -1,11 +1,12 @@
 {
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "sync-data": "wrangler d1 execute elenymakes-db --remote --command=\"SELECT * FROM products\" --json > src/data/products.json",
+        "build": "npm run sync-data && next build",
         "start": "next start",
         "lint": "next lint",
-        "deploy": "npx @opennextjs/cloudflare build && npx wrangler deploy",
-        "preview": "npx @opennextjs/cloudflare build && npx wrangler dev"
+        "deploy": "npm run sync-data && npx @opennextjs/cloudflare build && npx wrangler deploy",
+        "preview": "npm run sync-data && npx @opennextjs/cloudflare build && npx wrangler dev"
     },
     "dependencies": {
         "@paypal/react-paypal-js": "^9.0.1",

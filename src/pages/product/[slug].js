@@ -5,6 +5,37 @@ import Carousel from '../../components/carousel';
 import {updateCart} from '../../logic/updateCart';
 import useIsMobile from '../../logic/useIsMobile';
 
+import productsFile from '../../data/products.json'; // Add this at the top
+
+export async function getStaticPaths() {
+  // Access the results array inside the Wrangler wrapper
+  const rawResults = Array.isArray(productsFile) ? productsFile[0].results : [];
+  
+  const paths = rawResults.map((product) => ({
+    params: { slug: product.slug },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const rawResults = Array.isArray(productsFile) ? productsFile[0].results : [];
+  const item = rawResults.find((p) => p.slug === params.slug);
+
+  if (!item) return { notFound: true };
+
+  const formattedItem = {
+    ...item,
+    images: typeof item.images === 'string' ? JSON.parse(item.images || "[]") : (item.images || []),
+    materials: typeof item.materials === 'string' ? JSON.parse(item.materials || "[]") : (item.materials || []),
+    colors: typeof item.colors === 'string' ? JSON.parse(item.colors || "[]") : (item.colors || []),
+  };
+
+  return {
+    props: { item: formattedItem },
+    revalidate: false
+  };
+}
 
 // Makes the colors visibly stand out more
 const COLOR_MAP = {
@@ -294,50 +325,4 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
             </div>
         </div>
     );
-}
-
-
-
-export async function getStaticPaths() {
-  try {
-    const res = await fetch('https://elenymakes.com/api/products');
-    
-    if (!res.ok) {
-        // Fallback for the first "bootstrap" build
-        return { paths: [], fallback: 'blocking' };
-    }
-    
-    const products = await res.json();
-    
-    const paths = products.map((product) => ({
-      params: { slug: product.slug },
-    }));
-
-    return { paths, fallback: 'blocking' };
-  } catch (error) {
-    // If API isn't live yet, don't crash the build
-    return { paths: [], fallback: 'blocking' };
-  }
-}
-
-// 2. Fetch the data for a specific slug
-export async function getStaticProps({ params }) {
-  const { slug } = params;
-  try {
-    const res = await fetch(`https://elenymakes.com/api/products`);
-    
-    if (!res.ok) return { notFound: true };
-    
-    const allProducts = await res.json();
-    const item = allProducts.find(p => p.slug === slug);
-    
-    if (!item) return { notFound: true };
-
-    return {
-      props: { item },
-      revalidate: false
-    };
-  } catch (error) {
-    return { notFound: true };
-  }
 }

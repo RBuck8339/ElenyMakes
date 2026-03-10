@@ -3,6 +3,27 @@ import Banner from '../components/banner';
 import Disclaimer from '../components/disclaimer';
 import Item from '../components/item';
 
+import productsData from '../data/products.json';
+
+export async function getStaticProps() {
+  // Wrangler --json wraps results like this: [{ "results": [...], "success": true }]
+  // So we grab the first element's results array.
+  const rawResults = Array.isArray(productsData) ? productsData[0].results : [];
+
+  const products = rawResults.map(p => ({
+    ...p,
+    images: typeof p.images === 'string' ? JSON.parse(p.images || "[]") : (p.images || []),
+    materials: typeof p.materials === 'string' ? JSON.parse(p.materials || "[]") : (p.materials || []),
+    colors: typeof p.colors === 'string' ? JSON.parse(p.colors || "[]") : (p.colors || []),
+    pattern_exists: Boolean(p.pattern_exists)
+  }));
+
+  return {
+    props: { products },
+    revalidate: false 
+  };
+}
+
 export default function Home({products}) {
     // Render items to display all products
     // If "-combo" in item, group -bottom && -top images
@@ -33,26 +54,4 @@ export default function Home({products}) {
             <Disclaimer />
         </div>
     )
-}
-
-export async function getStaticProps() {
-  try {
-    const res = await fetch('https://elenymakes.com/api/products');
-    
-    if (!res.ok) {
-        console.warn("API not ready. Building empty shell.");
-        // Revalidate: 10 means "try to rebuild this in 10 seconds"
-        return { props: { products: [] }, revalidate: 10 };
-    }
-    
-    const products = await res.json();
-
-    return {
-      props: { products },
-      revalidate: false 
-    };
-  } catch (error) {
-    console.error("Static Build Error:", error.message);
-    return { props: { products: [] }, revalidate: 10 };
-  }
 }

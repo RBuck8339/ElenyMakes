@@ -302,11 +302,11 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
 export async function getStaticPaths() {
     const { data: products } = await supabase.from('products').select('slug');
 
-    const paths = products.map((product) => ({
-        params: { slug: product.slug } // Using the actual 'slug' column from DB
-    }));
+    const paths = products ? products.map((product) => ({
+        params: { slug: product.slug }
+    })) : [];
 
-    return { paths, fallback: false };
+    return { paths, fallback: 'blocking' }; 
 }
 
 export async function getStaticProps({ params }) {

@@ -157,7 +157,7 @@ export default function Checkout(){
                             </div>
                             <div className="flex flex-row justify-between mt-3">
                                 <h2 className="font-primary text-xl text-text-espresso">Total Price:</h2>
-                                <h2 className="font-primary text-xl text-text-espresso"><u>${totalPrice.toFixed(2)}</u></h2>
+                                <h2 className="font-primary text-xl text-text-espresso">$<u>{totalPrice.toFixed(2)}</u></h2>
                             </div>
                             <PayPalBtn amount={totalPrice} items={pdfNames} email={customerEmail} receiptItems={cartItems}/>
                         </div>

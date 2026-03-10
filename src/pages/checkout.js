@@ -99,7 +99,7 @@ export default function Checkout(){
                                                     <Link 
                                                         href={{
                                                             pathname: '/product/[slug]', 
-                                                            query: { slug: item.item_name.toLowerCase().replaceAll(' ', '_') },
+                                                            query: { slug: item.slug },
                                                         }}
                                                         className="w-full"
                                                         onClick={() => closeCart && closeCart()}

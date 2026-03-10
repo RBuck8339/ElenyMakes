@@ -6,6 +6,17 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
 
+    const initialOptions = {
+        "client-id": process.env.NEXT_PUBLIC_USE_SANDBOX === 'true' 
+            ? process.env.NEXT_PUBLIC_SANDBOX_PAYPAL_CLIENT_ID 
+            : process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+        currency: "USD",
+        intent: "capture",
+        components: "buttons",
+        "disable-funding": "paylater",
+        "enable-funding": "venmo"
+    };
+
     const fulfillOrder = async (orderId) => {
         setIsProcessing(true);
         try {

@@ -52,7 +52,7 @@ export default function Checkout(){
     }, []);
 
     const handleEmailChange = (event) => {
-        setEmail(event.target.value);
+        setCustomerEmail(event.target.value);
     }
 
     const cartItems = allProducts.filter(item => cartIds.includes(item.id));
@@ -141,7 +141,7 @@ export default function Checkout(){
                                     type="email"
                                     placeholder="Where should we send your patterns?"
                                     value={customerEmail}
-                                    onChange={(e) => setCustomerEmail(e.target.value)}
+                                    onChange={handleEmailChange}
                                     // 1. This triggers when the user clicks AWAY (not focus)
                                     onBlur={() => setIsTouched(true)} 
                                     className={`w-full p-4 rounded-xl border-2 border-accent-green/30 bg-white/50 outline-none transition-all font-secondary focus:bg-white

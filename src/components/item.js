@@ -7,7 +7,6 @@ import Carousel from '../components/carousel';
 export default function Item({ item }) {
     if (!item) return null;
 
-    // FIX: Use the actual slug from Supabase instead of generating it manually
     const itemSlug = item.slug; 
     
     // Ensure image paths work with the public folder

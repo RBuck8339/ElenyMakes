@@ -51,6 +51,7 @@ export default function Carousel({ images }) {
                     sizes="(max-width: 768px) 100vw, 50vw" // Helps Next.js optimize the size
                     className="object-cover rounded-2xl"
                     placeholder="blur"
+                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
                     priority={currIdx === 0} 
                     loading={currIdx === 0 ? undefined : "lazy"}
                 />

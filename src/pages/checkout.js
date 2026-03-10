@@ -5,7 +5,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { updateCart } from '../logic/updateCart';
-import { supabase } from '../logic/supabaseClient';
 
 
 export default function Checkout(){
@@ -14,39 +13,39 @@ export default function Checkout(){
     const [loading, setLoading] = useState(true);
     const [customerEmail, setCustomerEmail] = useState('');
     const [isTouched, setIsTouched] = useState(false);
-    const cartRef = useRef(null);
     
     const getImage = (item) => {
         if (!item || !item.images || item.images.length === 0) {
-            return '/gallery/placeholder.webp'; // Fallback
+            return '/gallery/placeholder.webp'; 
         }
         const path = item.images[0];
-        // Ensure it starts with a leading slash for the Next.js public folder
         return path.startsWith('/') ? path : `/${path}`;
     };
 
     useEffect(() => {
-        // defined inside useEffect so it has access to latest scope if needed
         const refreshCart = () => {
-            // Safety check for null (just in case)
             const stored = localStorage.getItem('cart_ids');
             setCartIds(stored ? JSON.parse(stored) : []);
         };
 
         const fetchProducts = async () => {
             setLoading(true);
-            const { data, error } = await supabase.from('products').select('*');
-            if (!error && data){
-                setAllProducts(data);
+            try {
+                // Fetch from your Cloudflare-backed API route
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (data) {
+                    setAllProducts(data);
+                }
+            } catch (err) {
+                console.error("Checkout fetch error:", err);
             }
             setLoading(false);
         }
 
-        // 1. Run immediately on mount
         refreshCart();
         fetchProducts();
 
-        // 2. Listen for updates
         window.addEventListener('updateCart', refreshCart);
         return () => window.removeEventListener('updateCart', refreshCart);
     }, []);
@@ -56,10 +55,9 @@ export default function Checkout(){
     }
 
     const cartItems = allProducts.filter(item => cartIds.includes(item.id));
-    const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
-    const pdfNames = cartItems.map(item => item.slug);  // The slug name matches the pdf name
+    const totalPrice = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
+    const pdfNames = cartItems.map(item => item.slug);
 
-    // Email validation
     const isValidEmail = customerEmail.includes('@') && customerEmail.includes('.');
     const showEmailError = isTouched && !isValidEmail && customerEmail !== '';
 

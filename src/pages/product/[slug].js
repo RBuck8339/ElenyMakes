@@ -4,7 +4,6 @@ import Header from '../../components/header';
 import Carousel from '../../components/carousel';
 import {updateCart} from '../../logic/updateCart';
 import useIsMobile from '../../logic/useIsMobile';
-import { supabase } from '../../logic/supabaseClient';
 
 
 // Makes the colors visibly stand out more
@@ -299,25 +298,51 @@ function DesktopView({ item, inCart, handleCartToggle, itemImages }) {
 
 
 
-export async function getStaticPaths() {
-    const { data: products } = await supabase.from('products').select('slug');
+export async function getStaticPaths(context) {
+    const { env } = context;
+    
+    try {
+        // Query D1 for all existing slugs
+        const { results } = await env.DB.prepare("SELECT slug FROM products").all();
+        
+        const paths = results.map((product) => ({
+            params: { slug: product.slug }
+        }));
 
-    const paths = products ? products.map((product) => ({
-        params: { slug: product.slug }
-    })) : [];
-
-    return { paths, fallback: 'blocking' }; 
+        return { paths, fallback: 'blocking' }; 
+    } catch (error) {
+        console.error("D1 paths error:", error);
+        return { paths: [], fallback: 'blocking' };
+    }
 }
 
-export async function getStaticProps({ params }) {
-    // Fetch the single product matching this slug
-    const { data: item, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('slug', params.slug)
-        .single();
+export async function getStaticProps({ params, env }) {
+    try {
+        // Fetch single product from D1
+        const item = await env.DB.prepare(
+            "SELECT * FROM products WHERE slug = ?"
+        )
+        .bind(params.slug)
+        .first();
 
-    return { 
-        props: { item: item || null } 
-    };
+        if (!item) {
+            return { notFound: true };
+        }
+
+        // Parse JSON strings back into arrays and handle Boolean
+        const formattedItem = {
+            ...item,
+            images: JSON.parse(item.images || "[]"),
+            materials: JSON.parse(item.materials || "[]"),
+            colors: JSON.parse(item.colors || "[]"),
+            pattern_exists: Boolean(item.pattern_exists)
+        };
+
+        return { 
+            props: { item: formattedItem } 
+        };
+    } catch (err) {
+        console.error("D1 props error:", err);
+        return { notFound: true };
+    }
 }

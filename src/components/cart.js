@@ -2,12 +2,10 @@ import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { updateCart } from '../logic/updateCart';
-import { supabase } from '../logic/supabaseClient';
-
 
 export default function Cart({ closeCart }) {
     const [cartIds, setCartIds] = useState([]);
-    const [allProducts, setAllProducts] = useState([]); // State for DB data
+    const [allProducts, setAllProducts] = useState([]); 
     const cartRef = useRef(null);
 
     useEffect(() => {
@@ -16,10 +14,15 @@ export default function Cart({ closeCart }) {
             setCartIds(stored ? JSON.parse(stored) : []);
         };
 
-        // Fetch product info from Supabase on mount
+        // NEW: Fetch from your own internal Cloudflare API
         const fetchProducts = async () => {
-            const { data } = await supabase.from('products').select('*');
-            setAllProducts(data || []);
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                setAllProducts(data || []);
+            } catch (err) {
+                console.error("Failed to load products for cart:", err);
+            }
         };
 
         refreshCart();
@@ -30,35 +33,27 @@ export default function Cart({ closeCart }) {
     }, []);
 
     const getImage = (item) => {
-        if (!item || !item.images || item.images.length === 0) {
-            return '/gallery/placeholder.webp'; // Fallback
+        // Safe check for parsed images array
+        if (!item || !item.images || !Array.isArray(item.images) || item.images.length === 0) {
+            return '/gallery/placeholder.webp'; 
         }
         const path = item.images[0];
-        // Ensure it starts with a leading slash for the Next.js public folder
         return path.startsWith('/') ? path : `/${path}`;
     };
 
-    // Filter DB products based on IDs in local storage
     const cartItems = allProducts.filter(item => cartIds.includes(item.id));
-    const totalPrice = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
     
     return (
         <div ref={cartRef} className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
-            
-            {/* Header */}
             <div className="p-3 border-b border-accent-green/30 bg-white/50">
                 <h2 className="font-primary text-xl text-text-espresso">Your Items</h2>
             </div>
 
-            {/* Scrollable area */}
             <div className="flex-1 overflow-y-auto p-4 bg-white">
-                {cartIds.length > 0 ? (
+                {cartItems.length > 0 ? (
                     <div className="space-y-2">
                         {cartItems.map((item) => (
-                            // RENDER EACH ITEM
                             <div key={item.id} className="flex items-center gap-3 border-b border-gray-100 pb-3 last:border-0">
-                                
-                                {/* IMAGE THUMBNAIL */}
                                 <div className="h-16 w-16 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
                                     <Image 
                                         src={getImage(item)} 
@@ -69,13 +64,9 @@ export default function Cart({ closeCart }) {
                                     />
                                 </div>
 
-                                {/* ITEM DETAILS */}
-                                <div className="flex-1 min-w-0"> {/* min-w-0 fixes text truncation */}
+                                <div className="flex-1 min-w-0">
                                     <Link 
-                                        href={{
-                                            pathname: '/product/[slug]', 
-                                            query: { slug: item.slug },
-                                        }}
+                                        href={`/product/${item.slug}`}
                                         className="w-full"
                                         onClick={() => closeCart && closeCart()}
                                     >
@@ -84,11 +75,11 @@ export default function Cart({ closeCart }) {
                                         </h3>
                                     </Link>
                                     <p className="font-secondary text-xs text-gray-500 truncate">
-                                        {item.id === 0 ? "Size A": "Standard Size"}
+                                        Standard Size
                                     </p>
                                     <div className="flex justify-between items-center mt-1">
                                         <span className="text-sm font-secondary text-accent-green">
-                                            ${item.price.toFixed(2)}
+                                            ${Number(item.price).toFixed(2)}
                                         </span>
                                         <button 
                                             className="font-secondary text-xs text-red-400 hover:text-red-600 underline"
@@ -103,13 +94,11 @@ export default function Cart({ closeCart }) {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center h-full text-center opacity-60">
-                         {/* Optional: Add a sad yarn ball icon here */}
                         <p className="text-sm text-gray-500 italic">Your cart is currently empty...</p>
                     </div>
                 )}
             </div>
 
-            {/* Footer */}
             <div className="p-4 bg-neutral-accent border-t border-accent-green/30">
                 <Link 
                     href="/checkout" 

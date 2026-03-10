@@ -1,4 +1,3 @@
-import { supabase } from '../logic/supabaseClient';
 import Header from '../components/header';
 import Banner from '../components/banner';
 import Disclaimer from '../components/disclaimer';
@@ -36,20 +35,28 @@ export default function Home({products}) {
     )
 }
 
-export async function getStaticProps() {
-    // Fetch all products from Supabase
-    const { data: products, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('id', { ascending: true });
+export async function getStaticProps(context) {
+    const { env } = context; 
+    
+    try {
+        const { results } = await env.DB.prepare(
+            "SELECT * FROM products ORDER BY id ASC"
+        ).all();
 
-    if (error) {
-        console.error("Error fetching products:", error);
+        const products = results.map(product => ({
+            ...product,
+            images: JSON.parse(product.images || "[]"),
+            materials: JSON.parse(product.materials || "[]"),
+            colors: JSON.parse(product.colors || "[]"),
+            pattern_exists: Boolean(product.pattern_exists) 
+        }));
+
+        return {
+            props: { products },
+            // Removed revalidate: 60. Data is now cached forever until next redeploy.
+        };
+    } catch (error) {
+        console.error("D1 Fetch Error:", error);
+        return { props: { products: [] } };
     }
-
-    return {
-        props: {
-            products: products || []
-        },
-    };
 }

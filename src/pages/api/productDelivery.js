@@ -1,41 +1,39 @@
-import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY);
+// Initialize Resend with your API key
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
 export default async function productDeliveryHandler(req, res) {
+  const { env } = req; // Access D1 and R2 bindings
   const { items, user_email, orderId } = req.body;
 
-  if (!items || !user_email || !orderId || !Array.isArray(items) || items.length === 0) {
-    console.error(">>> ERROR: Invalid request body data.");
-    return res.status(400).json({ error: "Invalid or missing items, user_email, or orderId" });
+  if (!items || !user_email || !orderId || !Array.isArray(items)) {
+    return res.status(400).json({ error: "Invalid request data" });
   }
 
   try {
-    
-    const attachments = await Promise.all(items.map(async (item) => {      
-      const { data: fileBlob, error: downloadError } = await supabase.storage
-        .from('patterns')
-        .download(`${item}.pdf`);
+    // 1. Fetch PDF files from Cloudflare R2
+    const attachments = await Promise.all(items.map(async (slug) => {
+      // The slug matches the filename we uploaded earlier (e.g., shark-bikini.pdf)
+      const object = await env.BUCKET.get(`${slug}.pdf`);
 
-      if (downloadError) {
-        console.error(`>>> DOWNLOAD ERROR for ${item}:`, downloadError);
-        throw new Error(`Failed to download: ${item}`);
+      if (!object) {
+        console.error(`>>> R2 ERROR: File ${slug}.pdf not found in bucket.`);
+        throw new Error(`File not found: ${slug}`);
       }
-      
-      const arrayBuffer = await fileBlob.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
 
-      return { 
-        filename: `${item}.pdf`, 
-        content: buffer, 
-        size: buffer.length 
+      // Convert R2 body to a Buffer-like format for Resend
+      const arrayBuffer = await object.arrayBuffer();
+      const content = new Uint8Array(arrayBuffer);
+
+      return {
+        filename: `${slug}.pdf`,
+        content: content,
+        size: content.byteLength
       };
     }));
 
-
-    // Batching Logic (Max 20MB per email)
+    // 2. Batching Logic (Max 20MB per email)
     const MAX_SIZE = 20 * 1024 * 1024;
     let batches = [];
     let currentBatch = [];
@@ -52,39 +50,33 @@ export default async function productDeliveryHandler(req, res) {
     });
     if (currentBatch.length > 0) batches.push(currentBatch);
 
-    
-    // SEND PATTERNS
+    // 3. SEND PATTERNS via Resend
     const emailPromises = batches.map((batch, index) => {
       return resend.emails.send({
-        from: 'Eleny Makes <patterns@elenymakes.com>', // Since domain is verified
+        from: 'Eleny Makes <patterns@elenymakes.com>',
         to: user_email,
         subject: `Your Patterns from Eleny Makes (Part ${index + 1} of ${batches.length})`,
-        text: `Thank you for your order! This is part ${index + 1} of your digital pattern delivery.`,
-        attachments: batch.map(({ filename, content }) => ({ filename, content })),
+        text: `Thank you for your order! Your digital patterns are attached.`,
+        attachments: batch.map(({ filename, content }) => ({
+          filename,
+          content: Buffer.from(content) // Resend likes a Buffer or Uint8Array
+        })),
       });
     });
 
-    const results = await Promise.all(emailPromises);
-    
-    // Check for Resend-specific errors in the response
-    const failedEmail = results.find(r => r.error);
-    if (failedEmail) {
-        console.error(">>> RESEND SEND ERROR:", failedEmail.error);
-        throw new Error("Pattern email failed to send via Resend.");
-    }
-
+    await Promise.all(emailPromises);
 
     return res.status(200).json({ 
-        message: "All patterns sent!", 
-        orderId: orderId,
-        batches: batches.length 
+      message: "All patterns sent!", 
+      orderId: orderId,
+      batches: batches.length 
     });
 
   } catch (error) {
-    console.error(">>> CRITICAL ERROR IN DELIVERY:", error.message);
+    console.error(">>> DELIVERY ERROR:", error.message);
     return res.status(500).json({ 
-        error: "Delivery failed", 
-        details: error.message 
+      error: "Delivery failed", 
+      details: error.message 
     });
   }
 }

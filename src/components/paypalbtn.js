@@ -68,6 +68,11 @@ export default function PayPalBtn({ amount, items, email, receiptItems }) {
         await fulfillOrder(details.id);
     };
 
+    const onError = (err) => {
+        console.error("PayPal checkout error:", err);
+        setIsProcessing(false);
+    };
+
     const handleFreeOrder = async () => {
         if (!email || !email.includes('@')) {
             return alert("Please enter a valid email address first!");

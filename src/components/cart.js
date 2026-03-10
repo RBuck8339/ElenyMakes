@@ -14,14 +14,18 @@ export default function Cart({ closeCart }) {
             setCartIds(stored ? JSON.parse(stored) : []);
         };
 
-        // NEW: Fetch from your own internal Cloudflare API
         const fetchProducts = async () => {
             try {
                 const res = await fetch('/api/products');
                 const data = await res.json();
-                setAllProducts(data || []);
+                
+                // Wrangler --json returns [{ results: [...] }]
+                // We must ensure we set an array to state
+                const actualProducts = Array.isArray(data) ? data[0].results : (data.results || []);
+                setAllProducts(actualProducts);
             } catch (err) {
                 console.error("Failed to load products for cart:", err);
+                setAllProducts([]); // Fallback to empty array on error
             }
         };
 
@@ -41,8 +45,10 @@ export default function Cart({ closeCart }) {
         return path.startsWith('/') ? path : `/${path}`;
     };
 
-    const cartItems = allProducts.filter(item => cartIds.includes(item.id));
-    
+const cartItems = Array.isArray(allProducts) 
+        ? allProducts.filter(item => cartIds.includes(item.id)) 
+        : [];    
+
     return (
         <div ref={cartRef} className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">
             <div className="p-3 border-b border-accent-green/30 bg-white/50">

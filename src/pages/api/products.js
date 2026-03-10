@@ -1,17 +1,17 @@
 import { getRequestContext } from '@opennextjs/cloudflare';
 
-export default async function handler(req, res) {
-  // 1. OpenNext's official way to get D1/R2 bindings
-  const runtime = getRequestContext();
-  const db = runtime?.env?.DB;
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
+  const context = getRequestContext();
+  const db = context?.env?.DB;
 
   if (!db) {
-    return res.status(500).json({ 
-      error: "D1 Database binding 'DB' not found.",
-      debug: {
-        hasRuntime: !!runtime,
-        envKeys: runtime?.env ? Object.keys(runtime.env) : "no-env-found"
-      }
+    return new Response(JSON.stringify({ error: "DB not found" }), { 
+      status: 500, 
+      headers: { 'content-type': 'application/json' } 
     });
   }
 

@@ -1,5 +1,9 @@
 export default async function handler(req, res) {
-  const { env } = req; // Cloudflare injects this into the request
+  const env = req.env || process.env; 
+
+  if (!env || !env.DB) {
+    return res.status(500).json({ error: "D1 Database binding 'DB' not found." });
+  }
   try {
     const { results } = await env.DB.prepare("SELECT * FROM products").all();
     

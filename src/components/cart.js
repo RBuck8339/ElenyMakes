@@ -19,22 +19,26 @@ export default function Cart({ closeCart }) {
                 const res = await fetch('/api/products');
                 const data = await res.json();
                 
-                // 1. Get the raw array regardless of Wrangler wrapper
-                const rawResults = Array.isArray(data) ? data[0].results : (data.results || data);
+                const rawResults = Array.isArray(data) && data[0]?.results 
+                    ? data[0].results 
+                    : (Array.isArray(data) ? data : []);
 
-                // 2. PARSE THE DATA: This is what's missing!
-                // We must convert the database strings back into usable Javascript arrays
                 const formattedProducts = rawResults.map(p => ({
                     ...p,
                     images: typeof p.images === 'string' ? JSON.parse(p.images || "[]") : (p.images || []),
-                    materials: typeof p.materials === 'string' ? JSON.parse(p.materials || "[]") : (p.materials || []),
-                    colors: typeof p.colors === 'string' ? JSON.parse(p.colors || "[]") : (p.colors || []),
+                    id: Number(p.id)
                 }));
 
                 setAllProducts(formattedProducts);
             } catch (err) {
-                console.error("Failed to load products for cart:", err);
-                setAllProducts([]);
+                console.error("Cart fetch error:", err);
+            }
+        };
+
+        // --- CLICK OUTSIDE HANDLER ---
+        const handleClickOutside = (event) => {
+            if (cartRef.current && !cartRef.current.contains(event.target)) {
+                closeCart();
             }
         };
 
@@ -42,8 +46,13 @@ export default function Cart({ closeCart }) {
         fetchProducts();
 
         window.addEventListener('updateCart', refreshCart);
-        return () => window.removeEventListener('updateCart', refreshCart);
-    }, []);
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            window.removeEventListener('updateCart', refreshCart);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [closeCart]);
 
     const getImage = (item) => {
         // Safe check for parsed images array
@@ -54,9 +63,9 @@ export default function Cart({ closeCart }) {
         return path.startsWith('/') ? path : `/${path}`;
     };
 
-const cartItems = Array.isArray(allProducts) 
-        ? allProducts.filter(item => cartIds.includes(item.id)) 
-        : [];    
+    const cartItems = allProducts.filter(item => 
+        cartIds.map(Number).includes(Number(item.id))
+    );   
 
     return (
         <div ref={cartRef} className="w-[95vw] md:w-1/3 min-h-[200px] max-h-[80vh] flex flex-col bg-neutral-accent border-2 border-accent-green shadow-2xl rounded-lg overflow-hidden p-3 m-3">

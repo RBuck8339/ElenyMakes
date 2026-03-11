@@ -6,12 +6,10 @@ export default function App({ Component, pageProps }) {
     <>
       <Head>
         {/* Basic Meta Tags */}
-        <title>Eleny Makes | Crochet & Knitting Patterns</title>
-        <meta name="description" content="Bespoke digital patterns for the modern maker." />
+        <title>Eleny Makes</title>
 
         {/* iMessage / Open Graph Tags */}
         <meta property="og:title" content="Eleny Makes" />
-        <meta property="og:description" content="Bespoke digital patterns for the modern maker." />
         <meta property="og:url" content="https://elenymakes.com" />
         <meta property="og:site_name" content="Eleny Makes" />
         <meta property="og:type" content="website" />

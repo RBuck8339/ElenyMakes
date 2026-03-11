@@ -1,21 +1,30 @@
+import { getRequestContext } from '@opennextjs/cloudflare';
+
 export default async function logOrder(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Only POST methods allowed' });
     }
 
-    const { env } = req; // In Cloudflare, env contains your DB binding
+    // 1. Discovery: OpenNext stores bindings in getRequestContext() or globalThis
+    const runtime = typeof getRequestContext === 'function' ? getRequestContext() : null;
+    const db = runtime?.env?.DB || globalThis?.DB || req.env?.DB;
+
     const { paypalId, email, amount, items } = req.body;
 
+    if (!db) {
+        console.error("CRITICAL: D1 Database binding 'DB' not found in logOrder.");
+        return res.status(500).json({ error: 'Database connection lost' });
+    }
+
     if (!paypalId || !email || !items) {
-        return res.status(400).json({ error: 'Missing required data for order' });
+        return res.status(400).json({ error: 'Missing required data' });
     }
 
     try {
-        // We use .prepare() and .bind() to prevent SQL injection
-        // items is likely an array, so we stringify it for SQLite TEXT storage
-        const orderId = crypto.randomUUID(); 
+        // 2. Use globalThis for crypto to be safe in Edge/Node environments
+        const orderId = globalThis.crypto.randomUUID(); 
         
-        await env.DB.prepare(`
+        await db.prepare(`
             INSERT INTO orders (id, paypal_id, customer_email, total_amount, items)
             VALUES (?, ?, ?, ?, ?)
         `)
@@ -29,12 +38,12 @@ export default async function logOrder(req, res) {
         .run();
 
         return res.status(200).json({ 
-            message: 'Order logged successfully', 
+            success: true,
             orderId: orderId 
         });
 
     } catch (error) {
         console.error('D1 Database Error:', error.message);
-        return res.status(500).json({ error: 'Failed to log order to Cloudflare D1' });
+        return res.status(500).json({ error: error.message });
     }
 }

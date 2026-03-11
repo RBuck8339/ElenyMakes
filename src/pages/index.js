@@ -15,8 +15,10 @@ export async function getStaticProps() {
     images: typeof p.images === 'string' ? JSON.parse(p.images || "[]") : (p.images || []),
     materials: typeof p.materials === 'string' ? JSON.parse(p.materials || "[]") : (p.materials || []),
     colors: typeof p.colors === 'string' ? JSON.parse(p.colors || "[]") : (p.colors || []),
-    pattern_exists: Boolean(p.pattern_exists)
-  }));
+    
+    // Explicitly check for 1 (number) or "1" (string)
+    pattern_exists: Number(p.pattern_exists) === 1
+    }));
 
   return {
     props: { products },

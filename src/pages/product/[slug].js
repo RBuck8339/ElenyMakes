@@ -29,7 +29,8 @@ export async function getStaticProps({ params }) {
     images: typeof item.images === 'string' ? JSON.parse(item.images || "[]") : (item.images || []),
     materials: typeof item.materials === 'string' ? JSON.parse(item.materials || "[]") : (item.materials || []),
     colors: typeof item.colors === 'string' ? JSON.parse(item.colors || "[]") : (item.colors || []),
-  };
+    pattern_exists: Number(item.pattern_exists) === 1
+    };
 
   return {
     props: { item: formattedItem },

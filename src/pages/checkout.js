@@ -157,7 +157,25 @@ export default function Checkout(){
                                 <h2 className="font-primary text-xl text-text-espresso">Total Price:</h2>
                                 <h2 className="font-primary text-xl text-text-espresso"><u>${totalPrice.toFixed(2)}</u></h2>
                             </div>
-                            <PayPalBtn amount={totalPrice} items={pdfNames} email={customerEmail} receiptItems={cartItems}/>
+                            <div className="relative mt-4">
+                                {/* Visual overlay to prevent clicks and show "disabled" state */}
+                                {!isValidEmail && (
+                                    <div className="absolute inset-0 z-10 bg-white/50 cursor-not-allowed flex items-center justify-center rounded-xl">
+                                        <p className="text-main-brown font-bold bg-white/80 px-4 py-2 rounded-lg shadow-sm border border-main-pink">
+                                            Enter email to unlock payment
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                <div className={!isValidEmail ? "opacity-40 grayscale" : "opacity-100"}>
+                                    <PayPalBtn 
+                                        amount={totalPrice} 
+                                        items={pdfNames} 
+                                        email={customerEmail} 
+                                        receiptItems={cartItems}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <Disclaimer />
                     </div>

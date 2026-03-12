@@ -11,7 +11,6 @@
     "dependencies": {
         "@paypal/react-paypal-js": "^9.0.1",
         "@react-email/components": "^1.0.8",
-        "@react-email/render": "^2.0.4",
         "@supabase/supabase-js": "^2.97.0",
         "dotenv": "^17.3.1",
         "next": "^14.0.0",

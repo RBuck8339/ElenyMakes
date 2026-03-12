@@ -1,7 +1,6 @@
 import { Resend } from 'resend';
-import { getRequestContext } from '@opennextjs/cloudflare';
+import { supabase } from '../../logic/supabaseClient'; // Adjust path to your client
 
-// Initialize Resend
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
 export default async function productDeliveryHandler(req, res) {
@@ -9,33 +8,28 @@ export default async function productDeliveryHandler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // 1. DISCOVERY BRIDGE: Find the R2 Bucket
-  const runtime = typeof getRequestContext === 'function' ? getRequestContext() : null;
-  const bucket = runtime?.env?.BUCKET || globalThis?.BUCKET || req.env?.BUCKET;
-
   const { items, user_email, orderId } = req.body;
-
-  if (!bucket) {
-    console.error("CRITICAL: R2 Bucket binding 'BUCKET' not found.");
-    return res.status(500).json({ error: "Storage connection lost" });
-  }
 
   if (!items || !user_email || !orderId || !Array.isArray(items)) {
     return res.status(400).json({ error: "Invalid request data" });
   }
 
   try {
-    // 2. Fetch PDF files from Cloudflare R2
+    // 1. Fetch PDF files from Supabase Storage
     const attachments = await Promise.all(items.map(async (slug) => {
-      // Access the bucket discovered in Step 1
-      const object = await bucket.get(`${slug}.pdf`);
+      // Assuming your bucket name is 'eleny-patterns'
+      const { data, error } = await supabase
+        .storage
+        .from('patterns')
+        .download(`${slug}.pdf`);
 
-      if (!object) {
-        console.error(`>>> R2 ERROR: File ${slug}.pdf not found in bucket.`);
+      if (error || !data) {
+        console.error(`>>> SUPABASE STORAGE ERROR for ${slug}:`, error?.message);
         throw new Error(`File not found: ${slug}`);
       }
 
-      const arrayBuffer = await object.arrayBuffer();
+      // Convert Blob (Supabase output) to ArrayBuffer for Resend
+      const arrayBuffer = await data.arrayBuffer();
       const content = new Uint8Array(arrayBuffer);
 
       return {
@@ -45,7 +39,7 @@ export default async function productDeliveryHandler(req, res) {
       };
     }));
 
-    // 3. Batching Logic (Max 20MB per email)
+    // 2. Batching Logic (Max 20MB per email)
     const MAX_SIZE = 20 * 1024 * 1024;
     let batches = [];
     let currentBatch = [];
@@ -62,7 +56,7 @@ export default async function productDeliveryHandler(req, res) {
     });
     if (currentBatch.length > 0) batches.push(currentBatch);
 
-    // 4. SEND PATTERNS via Resend
+    // 3. SEND PATTERNS via Resend
     const emailPromises = batches.map((batch, index) => {
       return resend.emails.send({
         from: 'Eleny Makes <patterns@elenymakes.com>',
@@ -71,7 +65,6 @@ export default async function productDeliveryHandler(req, res) {
         text: `Thank you for your order! Your digital patterns are attached.`,
         attachments: batch.map(({ filename, content }) => ({
           filename,
-          // Use Buffer.from(content) for Node compatibility or content directly for Edge
           content: Buffer.from(content) 
         })),
       });

@@ -5,35 +5,47 @@ import Carousel from '../../components/carousel';
 import {updateCart} from '../../logic/updateCart';
 import useIsMobile from '../../logic/useIsMobile';
 
-import productsFile from '../../data/products.json'; // Add this at the top
+import productsFile from '../../data/products.json';
 
 export async function getStaticPaths() {
-  // Access the results array inside the Wrangler wrapper
-  const rawResults = Array.isArray(productsFile) ? productsFile[0].results : [];
+  // Access the results array inside the first element of the JSON array
+  const rawResults = productsFile[0]?.results || [];
   
   const paths = rawResults.map((product) => ({
-    params: { slug: product.slug },
+    // Ensure the slug is a string and exists
+    params: { slug: String(product.slug) },
   }));
 
-  return { paths, fallback: false };
+  return { 
+    paths, 
+    // fallback: false means any slug not in the JSON will 404
+    fallback: false 
+  };
 }
 
 export async function getStaticProps({ params }) {
-  const rawResults = Array.isArray(productsFile) ? productsFile[0].results : [];
-  const item = rawResults.find((p) => p.slug === params.slug);
+  const rawResults = productsFile[0]?.results || [];
+  
+  // Find the specific item by slug
+  const item = rawResults.find((p) => String(p.slug) === params.slug);
 
-  if (!item) return { notFound: true };
+  if (!item) {
+    return { notFound: true };
+  }
 
+  // Formatting the data for the component
   const formattedItem = {
     ...item,
+    price: Number(item.price || 0),
     images: typeof item.images === 'string' ? JSON.parse(item.images || "[]") : (item.images || []),
     materials: typeof item.materials === 'string' ? JSON.parse(item.materials || "[]") : (item.materials || []),
     colors: typeof item.colors === 'string' ? JSON.parse(item.colors || "[]") : (item.colors || []),
     pattern_exists: Number(item.pattern_exists) === 1
-    };
+  };
 
   return {
     props: { item: formattedItem },
+    // Revalidate is false because your Webhook triggers a full rebuild on update
     revalidate: false
   };
 }

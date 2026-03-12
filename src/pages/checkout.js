@@ -7,57 +7,68 @@ import Image from 'next/image';
 import { updateCart } from '../logic/updateCart';
 
 
-export default function Checkout(){
+export default function Checkout() {
     const [cartIds, setCartIds] = useState([]);
-    const [allProducts, setAllProducts] = useState([]);
+    const [cartItems, setCartItems] = useState([]); // Corrected state name
     const [loading, setLoading] = useState(true);
     const [customerEmail, setCustomerEmail] = useState('');
     const [isTouched, setIsTouched] = useState(false);
-    
+
     const getImage = (item) => {
-        if (!item || !item.images || item.images.length === 0) {
-            return '/gallery/placeholder.webp'; 
-        }
-        const path = item.images[0];
+        if (!item || !item.images) return '/gallery/placeholder.webp';
+        // Handle both stringified JSON and raw arrays
+        const images = typeof item.images === 'string' ? JSON.parse(item.images) : item.images;
+        if (!images || images.length === 0) return '/gallery/placeholder.webp';
+        const path = images[0];
         return path.startsWith('/') ? path : `/${path}`;
     };
 
     useEffect(() => {
-        const refreshCart = () => {
-            const stored = localStorage.getItem('cart_ids');
-            setCartIds(stored ? JSON.parse(stored) : []);
-        };
-
-        const fetchProducts = async () => {
+        const fetchCheckoutData = async () => {
             setLoading(true);
+            const stored = localStorage.getItem('cart_ids');
+            const ids = stored ? JSON.parse(stored) : [];
+            setCartIds(ids);
+
+            if (ids.length === 0) {
+                setCartItems([]);
+                setLoading(false);
+                return;
+            }
+
             try {
-                // Fetch from your Cloudflare-backed API route
-                const res = await fetch('/api/products');
+                // Fetch ONLY the specific products in the cart
+                const res = await fetch(`/api/products?ids=${ids.join(',')}`);
                 const data = await res.json();
-                if (data) {
-                    setAllProducts(data);
-                }
+                
+                // Flexible parsing for D1 wrapper or direct array
+                const rawResults = Array.isArray(data) && data[0]?.results 
+                    ? data[0].results 
+                    : (Array.isArray(data) ? data : []);
+
+                const formatted = rawResults.map(p => ({
+                    ...p,
+                    price: Number(p.price || 0),
+                    id: Number(p.id)
+                }));
+
+                setCartItems(formatted);
             } catch (err) {
                 console.error("Checkout fetch error:", err);
             }
             setLoading(false);
-        }
+        };
 
-        refreshCart();
-        fetchProducts();
+        fetchCheckoutData();
 
-        window.addEventListener('updateCart', refreshCart);
-        return () => window.removeEventListener('updateCart', refreshCart);
+        const handleCartUpdate = () => fetchCheckoutData();
+        window.addEventListener('updateCart', handleCartUpdate);
+        return () => window.removeEventListener('updateCart', handleCartUpdate);
     }, []);
 
-    const handleEmailChange = (event) => {
-        setCustomerEmail(event.target.value);
-    }
-
-    const cartItems = allProducts.filter(item => cartIds.includes(item.id));
-    const totalPrice = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
+    // Derived values for the UI and PayPal
+    const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
     const pdfNames = cartItems.map(item => item.slug);
-
     const isValidEmail = customerEmail.includes('@') && customerEmail.includes('.');
     const showEmailError = isTouched && !isValidEmail && customerEmail !== '';
 
@@ -159,7 +170,7 @@ export default function Checkout(){
                             </div>
                             <div className="relative mt-4">
                                 {/* Visual overlay to prevent clicks and show "disabled" state */}
-                                {!isValidEmail && (
+                                {!isValidEmail && cartItems.length > 0 && (
                                     <div className="absolute inset-0 z-10 bg-white/50 cursor-not-allowed flex items-center justify-center rounded-xl">
                                         <p className="text-main-brown font-bold bg-white/80 px-4 py-2 rounded-lg shadow-sm border border-main-pink">
                                             Enter email to unlock payment

@@ -1,49 +1,48 @@
-import { getRequestContext } from '@opennextjs/cloudflare';
+import { supabase } from '../../logic/supabaseClient';
 
 export default async function logOrder(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Only POST methods allowed' });
     }
 
-    // 1. Discovery: OpenNext stores bindings in getRequestContext() or globalThis
-    const runtime = typeof getRequestContext === 'function' ? getRequestContext() : null;
-    const db = runtime?.env?.DB || globalThis?.DB || req.env?.DB;
-
     const { paypalId, email, amount, items } = req.body;
 
-    if (!db) {
-        console.error("CRITICAL: D1 Database binding 'DB' not found in logOrder.");
-        return res.status(500).json({ error: 'Database connection lost' });
-    }
-
     if (!paypalId || !email || !items) {
-        return res.status(400).json({ error: 'Missing required data' });
+        return res.status(400).json({ error: 'Missing required data for order' });
     }
 
     try {
-        // 2. Use globalThis for crypto to be safe in Edge/Node environments
-        const orderId = globalThis.crypto.randomUUID(); 
-        
-        await db.prepare(`
-            INSERT INTO orders (id, paypal_id, customer_email, total_amount, items)
-            VALUES (?, ?, ?, ?, ?)
-        `)
-        .bind(
-            orderId, 
-            paypalId, 
-            email, 
-            amount, 
-            JSON.stringify(items)
-        )
-        .run();
+        // Log the insert attempt
+        const { data, error } = await supabase
+            .from('orders')
+            .insert([
+                {
+                    paypal_id: paypalId,
+                    customer_email: email,
+                    total_amount: Number(amount),
+                    // If your column is type JSONB, pass 'items' directly. 
+                    // If it's type TEXT, use JSON.stringify(items).
+                    items: items, 
+                    status: 'completed'
+                }
+            ])
+            .select();
+
+        if (error) throw error;
+
+        // Ensure we actually got a row back before accessing data[0]
+        if (!data || data.length === 0) {
+            throw new Error("No data returned from order insertion");
+        }
 
         return res.status(200).json({ 
             success: true,
-            orderId: orderId 
+            message: 'Order logged successfully', 
+            orderId: data[0].id 
         });
 
     } catch (error) {
-        console.error('D1 Database Error:', error.message);
-        return res.status(500).json({ error: error.message });
+        console.error('>>> LOG ORDER ERROR: ', error.message);
+        return res.status(500).json({ error: 'Failed to log order to Supabase', details: error.message });
     }
 }

@@ -1,16 +1,19 @@
-import { Body } from '@react-email/body';
-import { Container } from '@react-email/container';
-import { Head } from '@react-email/head';
-import { Hr } from '@react-email/hr';
-import { Html } from '@react-email/html';
-import { Img } from '@react-email/img';
-import { Preview } from '@react-email/preview';
-import { Section } from '@react-email/section';
-import { Text } from '@react-email/text';
+import { 
+  Html, 
+  Head, 
+  Font, 
+  Body, 
+  Container, 
+  Text,
+  Section,
+  Img,
+  Row, 
+  Column  
+} from "@react-email/components";
 // If you use Tailwind:
 import { Tailwind } from '@react-email/tailwind';
 
-export const ReceiptEmailTemplate = ({ items, orderId, num_emails }) => (
+export const ReceiptEmailTemplate = ({ items, orderId }) => (
   <Html>
     <Head>
       <Font
@@ -63,8 +66,7 @@ export const ReceiptEmailTemplate = ({ items, orderId, num_emails }) => (
             Thank you for supporting Eleny Makes! Your order has been processed and your 
             digital patterns are on their way to your inbox. Be on the lookout for an email 
             from <code className="bg-slate-50 px-1">patterns@elenymakes.com</code>. 
-            Based on the size of your order, you should receive <strong>{num_emails}</strong> emails 
-            from this address.
+            Look forward to seeing more emails from this address!
           </Text>
 
           <Section className="border-t border-b border-accent-green py-4 my-6">

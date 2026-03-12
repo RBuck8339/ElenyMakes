@@ -1,7 +1,7 @@
 {
     "scripts": {
         "dev": "next dev",
-        "sync-data": "wrangler d1 execute elenymakes-db --remote --command=\"SELECT * FROM products\" --json > src/data/products.json",
+        "sync-data": "node scripts/sync.js",
         "build": "npm run sync-data && next build",
         "start": "next start",
         "lint": "next lint",
@@ -13,6 +13,7 @@
         "@react-email/components": "^1.0.8",
         "@react-email/render": "^2.0.4",
         "@supabase/supabase-js": "^2.97.0",
+        "dotenv": "^17.3.1",
         "next": "^14.0.0",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",

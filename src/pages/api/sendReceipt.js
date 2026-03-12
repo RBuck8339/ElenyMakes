@@ -5,7 +5,7 @@ const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
 export default async function receiptHandler(req, res) {
     // Destructure the data sent from the first function
-    const { items, orderId, num_emails, user_email } = req.body;
+    const { items, orderId, user_email } = req.body;
 
     try {
         // Map the item strings to the object format your template expects
@@ -21,7 +21,6 @@ export default async function receiptHandler(req, res) {
             react: ReceiptEmailTemplate({ 
                 items: templateItems, 
                 orderId, 
-                num_emails 
             })
         });
         if (error) throw error;

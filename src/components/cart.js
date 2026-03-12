@@ -9,16 +9,27 @@ export default function Cart({ closeCart }) {
     const cartRef = useRef(null);
 
     useEffect(() => {
-        const refreshCart = () => {
-            const stored = localStorage.getItem('cart_ids');
-            setCartIds(stored ? JSON.parse(stored) : []);
-        };
+    const refreshCart = () => {
+        const stored = localStorage.getItem('cart_ids');
+        const ids = stored ? JSON.parse(stored) : [];
+        setCartIds(ids);
+    };
 
-        const fetchProducts = async () => {
+    const fetchSpecificProducts = async () => {
+            const stored = localStorage.getItem('cart_ids');
+            const ids = stored ? JSON.parse(stored) : [];
+            
+            if (ids.length === 0) {
+                setAllProducts([]);
+                return;
+            }
+
             try {
-                const res = await fetch('/api/products');
+                // ONLY fetch the products currently in the cart
+                const res = await fetch(`/api/products?ids=${ids.join(',')}`);
                 const data = await res.json();
                 
+                // Handle the Cloudflare-style wrapper if it exists, otherwise use raw data
                 const rawResults = Array.isArray(data) && data[0]?.results 
                     ? data[0].results 
                     : (Array.isArray(data) ? data : []);
@@ -26,7 +37,8 @@ export default function Cart({ closeCart }) {
                 const formattedProducts = rawResults.map(p => ({
                     ...p,
                     images: typeof p.images === 'string' ? JSON.parse(p.images || "[]") : (p.images || []),
-                    id: Number(p.id)
+                    id: Number(p.id),
+                    price: Number(p.price || 0)
                 }));
 
                 setAllProducts(formattedProducts);
@@ -35,17 +47,20 @@ export default function Cart({ closeCart }) {
             }
         };
 
-        // --- CLICK OUTSIDE HANDLER ---
         const handleClickOutside = (event) => {
             if (cartRef.current && !cartRef.current.contains(event.target)) {
                 closeCart();
             }
-        };
+        }; 
 
         refreshCart();
-        fetchProducts();
+        fetchSpecificProducts(); // Only fetch what we need!
 
-        window.addEventListener('updateCart', refreshCart);
+        window.addEventListener('updateCart', () => {
+            refreshCart();
+            fetchSpecificProducts();
+        });
+
         document.addEventListener('mousedown', handleClickOutside);
 
         return () => {

@@ -1,84 +1,112 @@
-﻿[
-  {
-    "results": [
-      {
-        "id": 1,
-        "slug": "shark-bikini-top",
-        "item_name": "Shark Bikini Top",
-        "item_description": "This top is composed of single crochet cups, featuring color changes which create a shark print. Instructions for the button eyes are provided.",
-        "item_type": "Crochet",
-        "price": 3.6,
-        "materials": "[\"Size F Hook\",\"Four buttons\",\"Size 3 yarn\"]",
-        "colors": "[\"Light Grey\",\"Dark Grey\",\"Red\",\"White\",\"Black\",\"Blue\"]",
-        "images": "[\"gallery/products/shark-bikini-top/complete.webp\",\"gallery/products/shark-bikini-top/close_up.webp\"]",
-        "pattern_exists": 1
-      },
-      {
-        "id": 2,
-        "slug": "elenys-bikini-bottoms",
-        "item_name": "Eleny's Bikini Bottoms",
-        "item_description": "These bottoms are formed by a combination of single crochet and increase stitches. Instructions to create a gusset are provided, ensuring maximum security.",
-        "item_type": "Crochet",
-        "price": 0,
-        "materials": "[\"Size F Hook\",\"Size 3 yarn\"]",
-        "colors": "[]",
-        "images": "[\"gallery/products/elenys-bikini-bottoms/brown_bottom.webp\",\"gallery/products/elenys-bikini-bottoms/blue_bottom.webp\"]",
-        "pattern_exists": 1
-      },
-      {
-        "id": 3,
-        "slug": "starfish-bikini-top",
-        "item_name": "Starfish Bikini Top",
-        "item_description": "This top is composed of single crochets to form the cups, and a combination of stitches worked into a magic ring to form the starfish. Instructions to work buttons into the work are also provided.",
-        "item_type": "Crochet",
-        "price": 3.9,
-        "materials": "[\"Size F Hook\",\"Size 2 yarn\",\"35-40 buttons\"]",
-        "colors": "[]",
-        "images": "[\"gallery/products/starfish-bikini-top/starfish_top.webp\",\"gallery/products/starfish-bikini-top/starfish_closeup.webp\"]",
-        "pattern_exists": 1
-      },
-      {
-        "id": 4,
-        "slug": "elenys-wave-shrug",
-        "item_name": "Eleny's Wave Shrug",
-        "item_description": "This top is formed by joining wave shaped granny squares, then working above and below with a variety of stitches to create a mesh style detail.",
-        "item_type": "Crochet",
-        "price": 7.7,
-        "materials": "[\"Size F Hook\",\"Size 3 yarn\"]",
-        "colors": "[\"Blue\",\"Light Blue\",\"White\",\"Cream\"]",
-        "images": "[\"gallery/products/wave-top/wave_front.webp\",\"gallery/products/wave-top/wave_side.webp\",\"gallery/products/wave-top/wave_back.webp\"]",
-        "pattern_exists": 0
-      },
-      {
-        "id": 5,
-        "slug": "knit-microshorts",
-        "item_name": "Knit Microshorts",
-        "item_description": "These shorts are knit using German Short Rows to shape the shorts to be even in the front and the back. A gusset is created to add maximum coverage and security.",
-        "item_type": "Knit",
-        "price": 3.9,
-        "materials": "[\"Size 4 Needles\",\"2 Size 4 DPNs\",\"Size 5 eyelash yarn or Size 4 yarn held with mohair\"]",
-        "colors": "[]",
-        "images": "[\"gallery/products/knit-microshorts/blue_shorts.webp\",\"gallery/products/knit-microshorts/pink_shorts.webp\",\"gallery/products/knit-microshorts/blue_side.webp\",\"gallery/products/knit-microshorts/pink_shorts_back.webp\"]",
-        "pattern_exists": 1
-      }
+[{
+    "results": [{
+            "id": 1,
+            "slug": "shark-bikini-top",
+            "item_name": "Shark Bikini Top",
+            "item_description": "This top is composed of single crochet cups, featuring color changes which create a shark print. Instructions for the button eyes are provided.",
+            "item_type": "Crochet",
+            "price": 3.6,
+            "materials": [
+                "Size F Hook",
+                "Four buttons",
+                "Size 3 yarn"
+            ],
+            "colors": [
+                "Light Grey",
+                "Dark Grey",
+                "Red",
+                "White",
+                "Black",
+                "Blue"
+            ],
+            "images": [
+                "gallery/products/shark-bikini-top/complete.webp",
+                "gallery/products/shark-bikini-top/close_up.webp"
+            ],
+            "pattern_exists": true
+        },
+        {
+            "id": 2,
+            "slug": "elenys-bikini-bottoms",
+            "item_name": "Eleny's Bikini Bottoms",
+            "item_description": "These bottoms are formed by a combination of single crochet and increase stitches. Instructions to create a gusset are provided, ensuring maximum security.",
+            "item_type": "Crochet",
+            "price": 0,
+            "materials": [
+                "Size F Hook",
+                "Size 3 yarn"
+            ],
+            "colors": [],
+            "images": [
+                "gallery/products/elenys-bikini-bottoms/brown_bottom.webp",
+                "gallery/products/elenys-bikini-bottoms/blue_bottom.webp"
+            ],
+            "pattern_exists": true
+        },
+        {
+            "id": 3,
+            "slug": "starfish-bikini-top",
+            "item_name": "Starfish Bikini Top",
+            "item_description": "This top is composed of single crochets to form the cups, and a combination of stitches worked into a magic ring to form the starfish. Instructions to work buttons into the work are also provided.",
+            "item_type": "Crochet",
+            "price": 3.9,
+            "materials": [
+                "Size F Hook",
+                "Size 2 yarn",
+                "35-40 buttons"
+            ],
+            "colors": [],
+            "images": [
+                "gallery/products/starfish-bikini-top/starfish_top.webp",
+                "gallery/products/starfish-bikini-top/starfish_closeup.webp"
+            ],
+            "pattern_exists": true
+        },
+        {
+            "id": 4,
+            "slug": "elenys-wave-shrug",
+            "item_name": "Eleny's Wave Shrug",
+            "item_description": "This top is formed by joining wave shaped granny squares, then working above and below with a variety of stitches to create a mesh style detail.",
+            "item_type": "Crochet",
+            "price": 7.7,
+            "materials": [
+                "Size F Hook",
+                "Size 3 yarn"
+            ],
+            "colors": [
+                "Blue",
+                "Light Blue",
+                "White",
+                "Cream"
+            ],
+            "images": [
+                "gallery/products/wave-top/wave_front.webp",
+                "gallery/products/wave-top/wave_side.webp",
+                "gallery/products/wave-top/wave_back.webp"
+            ],
+            "pattern_exists": false
+        },
+        {
+            "id": 5,
+            "slug": "knit-microshorts",
+            "item_name": "Knit Microshorts",
+            "item_description": "These shorts are knit using German Short Rows to shape the shorts to be even in the front and the back. A gusset is created to add maximum coverage and security.",
+            "item_type": "Knit",
+            "price": 3.9,
+            "materials": [
+                "Size 4 Needles",
+                "2 Size 4 DPNs",
+                "Size 5 eyelash yarn or Size 4 yarn held with mohair"
+            ],
+            "colors": [],
+            "images": [
+                "gallery/products/knit-microshorts/blue_shorts.webp",
+                "gallery/products/knit-microshorts/pink_shorts.webp",
+                "gallery/products/knit-microshorts/blue_side.webp",
+                "gallery/products/knit-microshorts/pink_shorts_back.webp"
+            ],
+            "pattern_exists": true
+        }
     ],
-    "success": true,
-    "meta": {
-      "served_by": "v3-prod",
-      "served_by_region": "ENAM",
-      "served_by_colo": "MIA",
-      "served_by_primary": true,
-      "timings": {
-        "sql_duration_ms": 0.1805
-      },
-      "duration": 0.1805,
-      "changes": 0,
-      "last_row_id": 0,
-      "changed_db": false,
-      "size_after": 36864,
-      "rows_read": 5,
-      "rows_written": 0,
-      "total_attempts": 1
-    }
-  }
-]
+    "success": true
+}]

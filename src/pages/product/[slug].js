@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../../components/header';
@@ -18,8 +19,7 @@ export async function getStaticPaths() {
 
   return { 
     paths, 
-    // fallback: false means any slug not in the JSON will 404
-    fallback: false 
+    fallback: 'blocking' 
   };
 }
 

@@ -10,7 +10,8 @@ This Repository is for the design and deployment of elenymakes.com, an e-commerc
 ## Tech Stack:
 * **Frontend:** React & Tailwind CSS
 * **Framework:** Next.js
-* **Database & Storage:** Cloudfare D1 and R2 storage (SQLite & Secure Buckets)
+* **Database & Storage:** Supabase (PostgreSQL and storage buckets)
+* **Email System:** Resend with custom HTML templates
 * **Deployment:** Cloudflare
 
 ## Project Status:

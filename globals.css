@@ -12,8 +12,8 @@
     --color-other-pink2: #B48E92;
     --color-text-espresso: #3D3534;
     /* Font's; Just trying them for now */
-    --font-primary: 'Playfair Display', serif;
+    --font-primary: "Playfair Display", serif;
     --font-secondary: 'Lora', serif;
     --font-accent: 'Montserrat', sans-serif;
-    --font-logo: 'Monsieur La Doulaise', cursive;
+    --font-logo: "Monsieur La Doulaise", cursive;
 }

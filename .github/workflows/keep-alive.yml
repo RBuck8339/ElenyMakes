@@ -1,0 +1,20 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping_supabase:
+    runs-on: ubuntu-latest
+    env:
+      DB_URL: ${{ secrets.SUPABASE_URL }}
+      DB_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+      - name: Ping Database via RPC
+        run: |
+          curl -X POST "$DB_URL/rest/v1/rpc/keep_alive" \
+          -H "apikey: $DB_KEY" \
+          -H "Authorization: Bearer $DB_KEY" \
+          -H "Content-Type: application/json"
